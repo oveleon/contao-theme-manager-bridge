@@ -1,0 +1,1 @@
+# contao-theme-manager-bridge
