@@ -1,0 +1,14 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/tl_theme.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="tl_theme.theme_assistant.0">
+        <source>Theme assistant</source>
+        <target>Theme-Assistent</target>
+      </trans-unit>
+      <trans-unit id="tl_theme.theme_assistant.1">
+        <source>Manage your themes and content packages</source>
+        <target>Verwaltung Ihrer Themes und Inhalts-Pakete</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

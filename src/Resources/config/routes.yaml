@@ -1,0 +1,3 @@
+thememanager.bridge.controller:
+    resource: '@ContaoThemeManagerBridge/Controller'
+    type: annotation

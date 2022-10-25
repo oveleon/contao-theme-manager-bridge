@@ -1,0 +1,14 @@
+<?php
+
+use Contao\ArrayUtil;
+
+// Add global operations
+ArrayUtil::arrayInsert($GLOBALS['TL_DCA']['tl_theme']['list']['global_operations'], -1, [
+    'theme_assistant' => [
+        'icon' => 'bundles/contaothememanagerbridge/icons/assistant.svg'
+    ]
+]);
+
+$GLOBALS['TL_DCA']['tl_theme']['fields']['contentPackage'] = [
+    'sql' => "varchar(128) NOT NULL default ''"
+];

@@ -1,0 +1,46 @@
+{
+    "name": "oveleon/contao-theme-manager-bridge",
+    "description": "Bridge between Contao ThemeManager and Oveleon Themes.",
+    "license": "AGPL-3.0-or-later",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Oveleon",
+            "homepage": "https://www.oveleon.de"
+        },
+        {
+            "name": "Daniele Sciannimanica",
+            "homepage": "https://github.com/doishub"
+        }
+    ],
+    "homepage": "https://www.oveleon.de",
+    "require": {
+        "ext-dom": "*",
+        "php": "^8.1",
+        "contao/core-bundle": "^4.13",
+        "symfony/config": "^5.4 || ^6.0",
+        "symfony/dependency-injection": "^5.4 || ^6.0",
+        "symfony/http-kernel": "^5.4 || ^6.0"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "^2.0"
+    },
+    "conflict": {
+        "contao/manager-plugin": "<2.0 || >=3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Oveleon\\ContaoThemeManagerBridge\\": "src/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true,
+            "contao-components/installer": true,
+            "contao/manager-plugin": true
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Oveleon\\ContaoThemeManagerBridge\\ContaoManager\\Plugin"
+    }
+}

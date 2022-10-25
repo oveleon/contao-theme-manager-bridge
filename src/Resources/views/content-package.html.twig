@@ -1,0 +1,37 @@
+<div class="modules">
+    {% for contentPackage in files %}
+        <div class="module">
+            <div class="preview-box{% if contentPackage.isInstalled %} installed{% endif %}">
+                <div class="icon">
+                    <div class="empty"></div>
+                </div>
+                <div>
+                    <div class="name">Zahnarzt</div>
+                    <div class="tags">
+                        <div class="version">
+                            {{ contentPackage.tag }}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <a href="#" target="_blank" class="tl_submit">Installieren</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% if files == null %}
+    <div class="preview-box">
+        <div class="icon">
+            <div class="empty"></div>
+        </div>
+        <div>
+            <div class="empty">{{ label.empty }}</div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="actions">
+    <a href="{{ link.store }}" target="_blank" class="tl_submit">{{ label.store }}</a>
+</div>

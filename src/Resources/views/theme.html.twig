@@ -1,0 +1,27 @@
+<div class="preview-box{% if manifest.name is defined %} installed{% endif %}">
+    <div class="icon">
+        {% if manifest.image is defined %}
+            {{ manifest.image|raw }}
+        {% endif %}
+        <div class="empty"></div>
+    </div>
+    <div>
+        {% if manifest %}
+            <div class="name">{{ manifest.name }}</div>
+            <div class="tags">
+                <div class="version">
+                    {{ label.version}} {{ manifest.version }}
+                </div>
+            </div>
+            <div class="actions">
+                <a href="{{ link.docs }}" target="_blank" class="tl_submit">{{ label.docs }}</a>
+                <a href="{{ link.docs }}" target="_blank" class="tl_submit">{{ label.info }}</a>
+            </div>
+        {% else %}
+            <div class="empty">{{ label.empty }}</div>
+            <div class="actions">
+                <a href="{{ link.store }}" target="_blank" class="tl_submit">{{ label.store }}</a>
+            </div>
+        {% endif %}
+    </div>
+</div>

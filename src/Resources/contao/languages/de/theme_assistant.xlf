@@ -1,0 +1,83 @@
+<?xml version="1.0" ?><xliff version="1.1">
+  <file datatype="php" original="src/Resources/contao/languages/en/theme_assistant.php" source-language="en" target-language="de">
+    <body>
+      <trans-unit id="theme_assistant.headline">
+        <source>Theme assistant</source>
+        <target>Theme-Assistent</target>
+      </trans-unit>
+
+      <!-- Global -->
+      <trans-unit id="theme_assistant.label.import">
+        <source>Import</source>
+        <target>Importieren</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.label.export">
+        <source>Export</source>
+        <target>Exportieren</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.label.installable">
+        <source>Installable</source>
+        <target>Installationsbereit</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.label.installed">
+        <source>Installed</source>
+        <target>Installiert</target>
+      </trans-unit>
+
+      <trans-unit id="theme_assistant.label.info">
+        <source>Information</source>
+        <target>Information</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.link.info">
+        <source>https://www.oveleon.de</source>
+        <target>https://www.oveleon.de</target>
+      </trans-unit>
+
+      <trans-unit id="theme_assistant.label.docs">
+        <source>Documentation</source>
+        <target>Dokumentation</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.link.docs">
+        <source>https://www.oveleon.de</source>
+        <target>https://www.oveleon.de</target>
+      </trans-unit>
+
+      <trans-unit id="theme_assistant.label.store">
+        <source>Search Themes</source>
+        <target>Themes finden</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.label.content-store">
+        <source>Search content packages</source>
+        <target>Inhalts-Pakte finden</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.link.store">
+        <source>https://www.oveleon.de</source>
+        <target>https://www.oveleon.de</target>
+      </trans-unit>
+
+      <!-- Section: Themes -->
+      <trans-unit id="theme_assistant.theme.title">
+        <source>Theme</source>
+        <target>Theme</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.theme.label.version">
+        <source>Version</source>
+        <target>Version</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.theme.label.empty">
+        <source>Currently no theme is installed</source>
+        <target>Aktuell ist kein Theme installiert</target>
+      </trans-unit>
+
+      <!-- Section: Content Packages -->
+      <trans-unit id="theme_assistant.content-package.title">
+        <source>Content packages</source>
+        <target>Inhalts-Pakete</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.content-package.label.empty">
+        <target>Currently no content package is installed</target>
+        <source>Aktuell ist kein Inhalts-Paket installiert</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
