@@ -22,6 +22,7 @@ use Contao\LayoutModel;
 use Contao\MemberGroupModel;
 use Contao\Model\Collection;
 use Contao\ModuleModel;
+use Contao\NewsArchiveModel;
 use Contao\NewsletterChannelModel;
 use Contao\NewsletterDenyListModel;
 use Contao\NewsletterModel;
@@ -172,6 +173,7 @@ class ContentPackageExport
         $this->exportMany(FaqModel::class);
         $this->exportMany(FaqCategoryModel::class);
         $this->exportMany(NewsModel::class);
+        $this->exportMany(NewsArchiveModel::class);
         $this->exportMany(CalendarModel::class);
         $this->exportMany(CalendarEventsModel::class);
         $this->exportMany(CalendarFeedModel::class);

@@ -16,7 +16,7 @@ importModal.addFooterBtn('Importieren', 'tl_submit', function() {
     importModal.close()
 });
 
-for(let button of document.querySelectorAll('.assistant-module .module a.import'))
+for(let button of document.querySelectorAll('.assistant-module a.import'))
 {
     button.addEventListener('click', (e) => {
         e.preventDefault()
