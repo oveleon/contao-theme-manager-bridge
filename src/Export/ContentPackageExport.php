@@ -3,21 +3,38 @@
 namespace Oveleon\ContaoThemeManagerBridge\Export;
 
 use Contao\ArticleModel;
+use Contao\CalendarEventsModel;
+use Contao\CalendarFeedModel;
+use Contao\CalendarModel;
+use Contao\CommentsModel;
+use Contao\CommentsNotifyModel;
 use Contao\ContentModel;
 use Contao\Database;
+use Contao\FaqCategoryModel;
+use Contao\FaqModel;
 use Contao\File;
 use Contao\FilesModel;
+use Contao\FormFieldModel;
+use Contao\FormModel;
 use Contao\ImageSizeItemModel;
 use Contao\ImageSizeModel;
 use Contao\LayoutModel;
+use Contao\MemberGroupModel;
 use Contao\Model\Collection;
 use Contao\ModuleModel;
+use Contao\NewsletterChannelModel;
+use Contao\NewsletterDenyListModel;
+use Contao\NewsletterModel;
+use Contao\NewsletterRecipientsModel;
+use Contao\NewsModel;
 use Contao\PageModel;
 use Contao\StyleModel;
 use Contao\StyleSheetModel;
 use Contao\ThemeModel;
+use Contao\UserGroupModel;
 use Contao\ZipWriter;
 use Exception;
+use Symfony\Component\Finder\Finder;
 
 class ContentPackageExport
 {
@@ -29,6 +46,7 @@ class ContentPackageExport
     protected ?array  $manifest = null;
     protected ?string $filename = null;
     protected ?string $filepath = null;
+    protected ?array  $directories = null;
 
     /**
      * Set the file name
@@ -45,7 +63,37 @@ class ContentPackageExport
      */
     public function setManifestData(array $data): self
     {
-        $this->manifest = $data;
+        if(null === $this->manifest)
+        {
+            $this->manifest = $data;
+        }
+
+        $this->manifest = [...$this->manifest, ...$data];
+
+        return $this;
+    }
+
+    /**
+     * Adds a directory to export
+     */
+    public function addDirectory(string $path): self
+    {
+        if(!$path)
+        {
+            return $this;
+        }
+
+        if(!is_array($this->directories))
+        {
+            $this->directories = [];
+        }
+
+        $this->directories[] = $path;
+
+        // Add directories to manifest
+        $this->setManifestData([
+            'directories' => array_map(fn($dir) => $this->getDirectoryRoot($dir), $this->directories)
+        ]);
 
         return $this;
     }
@@ -94,44 +142,50 @@ class ContentPackageExport
         // Create zip archive
         $this->archive = new ZipWriter($this->getFilePath());
 
-        // Create content.manifest.json
+        // Create and export content.manifest.json
         $this->exportContentManifest();
 
+        // Export pages
+        $pageIds = $this->exportPages($rootPageId);
+
+        // Export articles
+        $articleIds = $this->exportMany(ArticleModel::class, $pageIds);
+
+        // Export content elements
+        $this->exportMany(ContentModel::class, $articleIds);
+
         // Export theme and sub tables
-        $this->exportOne(ThemeModel::class, 'tl_theme', $themeId);
-        $this->exportMany(StyleSheetModel::class, 'tl_style_sheet', [$themeId]);
-        $this->exportMany(StyleModel::class, 'tl_style', [$themeId]);
-        $this->exportMany(ImageSizeModel::class, 'tl_image_size', [$themeId]);
-        $this->exportMany(ImageSizeItemModel::class, 'tl_image_size_item', [$themeId]);
-        $this->exportMany(ModuleModel::class, 'tl_module', [$themeId]);
-        $this->exportMany(LayoutModel::class, 'tl_layout', [$themeId]);
-        $this->exportMany(FilesModel::class, 'tl_files', [$themeId]);
-
-        // ToDo: Export content files (files/content)
-
-        // Export pages, articles and content elements
-        $pageIds    = $this->exportPages($rootPageId);
-        $articleIds = $this->exportMany(ArticleModel::class, 'tl_article', $pageIds);
-        $contentIds = $this->exportMany(ContentModel::class, 'tl_content', $articleIds);
+        $this->exportOne(ThemeModel::class, $themeId);
+        $this->exportMany(StyleSheetModel::class, [$themeId]);
+        $this->exportMany(StyleModel::class, [$themeId]);
+        $this->exportMany(ImageSizeModel::class, [$themeId]);
+        $this->exportMany(ImageSizeItemModel::class, [$themeId]);
+        $this->exportMany(ModuleModel::class, [$themeId]);
+        $this->exportMany(LayoutModel::class, [$themeId]);
+        $this->exportMany(FilesModel::class, [$themeId]);
 
         // Export other tables
-        // ToDo: Export tl_form
-        // ToDo: Export tl_form_field
-        // ToDo: Export tl_user_group
-        // ToDo: Export tl_member_group
-        // ToDo: Export tl_faq
-        // ToDo: Export tl_faq_category
-        // ToDo: Export tl_news
-        // ToDo: Export tl_calendar
-        // ToDo: Export tl_calendar_events
-        // ToDo: Export tl_calendar_feed
-        // ToDo: Export tl_comments
-        // ToDo: Export tl_comments_notify
-        // ToDo: Export tl_newsletter
-        // ToDo: Export tl_newsletter_channel
-        // ToDo: Export tl_newsletter_deny_list
-        // ToDo: Export tl_newsletter_recipients
+        $this->exportMany(FormModel::class);
+        $this->exportMany(FormFieldModel::class);
+        $this->exportMany(UserGroupModel::class);
+        $this->exportMany(MemberGroupModel::class);
+        $this->exportMany(FaqModel::class);
+        $this->exportMany(FaqCategoryModel::class);
+        $this->exportMany(NewsModel::class);
+        $this->exportMany(CalendarModel::class);
+        $this->exportMany(CalendarEventsModel::class);
+        $this->exportMany(CalendarFeedModel::class);
+        $this->exportMany(CommentsModel::class);
+        $this->exportMany(CommentsNotifyModel::class);
+        $this->exportMany(NewsletterModel::class);
+        $this->exportMany(NewsletterChannelModel::class);
+        $this->exportMany(NewsletterDenyListModel::class);
+        $this->exportMany(NewsletterRecipientsModel::class);
 
+        // Export directories
+        $this->exportDirectories();
+
+        // Close archive
         $this->archive->close();
 
         return $this;
@@ -169,10 +223,11 @@ class ContentPackageExport
     /**
      * Export one data row by a specific model, table and id
      */
-    protected function exportOne($modelClass, string $table, int $id): void
+    protected function exportOne($modelClass, int $id): void
     {
         // Get model by id
         $model = $modelClass::findById($id);
+        $table = $modelClass::getTable();
 
         // Create collection
         $collection = new Collection([$model], $table);
@@ -184,9 +239,9 @@ class ContentPackageExport
     /**
      * Export data by a specific model, table and optionally parent ids
      */
-    protected function exportMany($modelClass, string $table, array|bool|null $parentIds = false): ?array
+    protected function exportMany($modelClass, array|bool|null $parentIds = false): ?array
     {
-        if(null === $parentIds)
+        if(null === $parentIds || !class_exists($modelClass))
         {
             return null;
         }
@@ -196,9 +251,10 @@ class ContentPackageExport
             default => 'findByPid'
         };
 
+        $table = $modelClass::getTable();
         $collection = null;
 
-        foreach ($parentIds as $parentId)
+        foreach ($parentIds ?: [[]] as $parentId)
         {
             if($model = $modelClass::$modelMethod($parentId))
             {
@@ -232,6 +288,55 @@ class ContentPackageExport
     }
 
     /**
+     * @throws Exception
+     */
+    protected function exportDirectories(): void
+    {
+        if(!is_array($this->directories))
+        {
+            return;
+        }
+
+        foreach ($this->directories as $directory)
+        {
+            $directoryFinder = new Finder();
+            $directoryFinder
+                ->directories()
+                ->in($directory)
+                ->depth("==0");
+
+            if(!$directoryFinder->hasResults())
+            {
+                continue;
+            }
+
+            $rootDirectory = $this->getDirectoryRoot($directory);
+
+            foreach ($directoryFinder as $dir)
+            {
+                $fileFinder = new Finder();
+                $fileFinder
+                    ->files()
+                    ->in($dir->getRealPath());
+
+                if(!$fileFinder->hasResults())
+                {
+                    continue;
+                }
+
+                $directoryPath = $rootDirectory . DIRECTORY_SEPARATOR . $dir->getRelativePathname();
+
+                foreach ($fileFinder as $file)
+                {
+                    $filePath = $directoryPath . DIRECTORY_SEPARATOR . $file->getRelativePathname();
+
+                    $this->archive->addFile($filePath);
+                }
+            }
+        }
+    }
+
+    /**
      * Creates a file of a collection and add it to the zip archive
      */
     protected function addCollectionFile(?Collection $modelCollection, string $fileName): void
@@ -245,5 +350,10 @@ class ContentPackageExport
             json_encode($modelCollection->fetchAll(), JSON_INVALID_UTF8_IGNORE),
             $fileName . self::TABLE_FILE_EXTENSION
         );
+    }
+
+    protected function getDirectoryRoot($directory): string
+    {
+        return 'files' . DIRECTORY_SEPARATOR . basename($directory);
     }
 }

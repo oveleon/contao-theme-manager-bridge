@@ -23,6 +23,26 @@
         <source>Installed</source>
         <target>Installiert</target>
       </trans-unit>
+      <trans-unit id="theme_assistant.label.theme">
+        <source>Theme</source>
+        <target>Theme</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.label.pageEntry">
+        <source>Root page</source>
+        <target>Seitenstartpunkt</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.label.directory">
+        <source>Directory</source>
+        <target>Ordner</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.label.name">
+        <source>Name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.label.version">
+        <source>Version</source>
+        <target>Version</target>
+      </trans-unit>
 
       <trans-unit id="theme_assistant.label.info">
         <source>Information</source>
@@ -73,6 +93,14 @@
       <trans-unit id="theme_assistant.content-package.title">
         <source>Content packages</source>
         <target>Inhalts-Pakete</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.content-package.label.export">
+        <source>Export content packages</source>
+        <target>Inhalts-Pakete exportieren</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.content-package.label.description">
+        <source>You are about to export a content package of the current Contao instance. Select the associated connections, assign a name as well as a version number and click Export.</source>
+        <target>Sie sind dabei, ein Inhalts-Paket der aktuellen Contao-Instanz zu exportieren. Wählen Sie die zugehörigen Verbindungen, vergeben Sie einen Namen sowie eine Versionsnummer und klicken Sie auf Exportieren.</target>
       </trans-unit>
       <trans-unit id="theme_assistant.content-package.label.empty">
         <target>Currently no content package is installed</target>

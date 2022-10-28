@@ -34,6 +34,7 @@ class ContentPackageExportController
                 'name'    => $request->get('name'),
                 'version' => $request->get('version')
             ])
+            ->addDirectory($request->get('directory'))
             ->setFileName(StringUtil::sanitizeFileName($request->get('name')))
             ->export($request->get('theme'), $request->get('page'))
             ->sendToBrowser();

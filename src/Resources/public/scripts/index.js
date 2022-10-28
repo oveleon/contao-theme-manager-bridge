@@ -50,15 +50,12 @@ exportModal.addFooterBtn('Exportieren', 'tl_submit', function() {
     exportModal.close()
 });
 
-for(let button of document.querySelectorAll('a.content-export'))
-{
-    button.addEventListener('click', (e) => {
-        e.preventDefault()
+document.querySelector('#theme-assistant-buttons a.content-export').addEventListener('click', (e) => {
+    e.preventDefault()
 
-        exportModal.setContent(createExportTemplate())
-        exportModal.open()
-    })
-}
+    exportModal.setContent(createExportTemplate())
+    exportModal.open()
+})
 
 function createExportTemplate(){
     const template = document.querySelector("#content-export-template").content.cloneNode(true)

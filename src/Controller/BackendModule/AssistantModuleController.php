@@ -11,12 +11,15 @@ use Contao\PageModel;
 use Contao\ThemeModel;
 use Contao\ZipReader;
 use Exception;
+use Oveleon\ContaoThemeManagerBridge\Controller\ContentPackageExportController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment as TwigEnvironment;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/contao/theme/assistant",
@@ -31,6 +34,8 @@ class AssistantModuleController extends AbstractController
     public function __construct(
         private readonly TwigEnvironment $twig,
         private readonly TranslatorInterface $translator,
+        private readonly ContaoCsrfTokenManager $csrfTokenManager,
+        private readonly RouterInterface $router,
         private readonly Studio $studio
     ){}
 
@@ -45,15 +50,30 @@ class AssistantModuleController extends AbstractController
             '@ContaoThemeManagerBridge/assistant.html.twig',
             [
                 'label' => [
-                    'headline'  => $this->translator->trans('theme_assistant.headline', [], 'contao_default'),
-                    'backLabel' => $this->translator->trans('MSC.backBT', [], 'contao_default'),
-                    'backTitle' => $this->translator->trans('MSC.backBTTitle', [], 'contao_default')
+                    'headline'          => $this->translator->trans('theme_assistant.headline', [], 'contao_default'),
+                    'backLabel'         => $this->translator->trans('MSC.backBT', [], 'contao_default'),
+                    'backTitle'         => $this->translator->trans('MSC.backBTTitle', [], 'contao_default'),
+                    'contentExport'     => $this->translator->trans('theme_assistant.content-package.label.export', [], 'contao_default'),
+                    'contentExportDesc' => $this->translator->trans('theme_assistant.content-package.label.description', [], 'contao_default'),
+                    'contentStore'      => $this->translator->trans('theme_assistant.label.content-store', [], 'contao_default'),
+                    'theme'             => $this->translator->trans('theme_assistant.label.theme', [], 'contao_default'),
+                    'pageEntry'         => $this->translator->trans('theme_assistant.label.pageEntry', [], 'contao_default'),
+                    'name'              => $this->translator->trans('theme_assistant.label.name', [], 'contao_default'),
+                    'version'           => $this->translator->trans('theme_assistant.label.version', [], 'contao_default'),
+                    'directory'         => $this->translator->trans('theme_assistant.label.directory', [], 'contao_default'),
+                    'exportHl'          => $this->translator->trans('theme_assistant.content-package.label.export', [], 'contao_default')
                 ],
                 'action' => [
-                    'back' => 'contao?do=themes',
+                    'back'          => 'contao?do=themes',
+                    'store'         => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
+                    'contentExport' => $this->router->generate(ContentPackageExportController::class),
                 ],
-                'messages' => Message::generate(),
-                'sections' => $this->sections
+                'rt'          => $this->csrfTokenManager->getDefaultTokenValue(),
+                'themes'      => $this->getThemes(),
+                'pages'       => $this->getRootPages(),
+                'directories' => $this->getFileDirectories(),
+                'messages'    => Message::generate(),
+                'sections'    => $this->sections
             ]
         ));
     }
@@ -68,7 +88,7 @@ class AssistantModuleController extends AbstractController
             // Get theme logo
             $figure = $this->studio
                 ->createFigureBuilder()
-                ->setSize([0, 60])
+                ->setSize([0, 50])
                 ->fromPath($manifest['path'] . '/' . $manifest['logo'])
                 ->buildIfResourceExists();
 
@@ -93,7 +113,8 @@ class AssistantModuleController extends AbstractController
                         'docs'    => $this->translator->trans('theme_assistant.label.docs', [], 'contao_default'),
                         'info'    => $this->translator->trans('theme_assistant.label.info', [], 'contao_default'),
                         'store'   => $this->translator->trans('theme_assistant.label.store', [], 'contao_default'),
-                        'empty'   => $this->translator->trans('theme_assistant.theme.label.empty', [], 'contao_default')
+                        'empty'   => $this->translator->trans('theme_assistant.theme.label.empty', [], 'contao_default'),
+                        'export'  => $this->translator->trans('theme_assistant.label.export', [], 'contao_default')
                     ],
                     'link'     => [
                         'store'   => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
@@ -110,32 +131,19 @@ class AssistantModuleController extends AbstractController
      */
     private function loadContentPackageSection(): void
     {
-        // Prepare content export
-        $themes = ThemeModel::findAll();
-        $pages = PageModel::findByType('root');
-
         $this->sections[] = [
-            'title'  => $this->translator->trans('theme_assistant.content-packages.title', [], 'contao_default'),
+            'title'  => $this->translator->trans('theme_assistant.content-package.title', [], 'contao_default'),
             'module' => $this->twig->render(
                 '@ContaoThemeManagerBridge/content-package.html.twig',
                 [
-                    'files'    => $this->getContentPackages(),
-                    'themes'   => array_combine(
-                        $themes->fetchEach('id'),
-                        $themes->fetchEach('name')
-                    ),
-                    'pages'   => array_combine(
-                        $pages->fetchEach('id'),
-                        $pages->fetchEach('title')
-                    ),
-                    'label'    => [
-                        'import'  => $this->translator->trans('theme_assistant.label.import', [], 'contao_default'),
-                        'export'  => $this->translator->trans('theme_assistant.label.export', [], 'contao_default'),
-                        'store'   => $this->translator->trans('theme_assistant.label.content-store', [], 'contao_default'),
-                        'empty'   => $this->translator->trans('theme_assistant.content-package.label.empty', [], 'contao_default')
+                    'files'  => $this->getContentPackages(),
+                    'label'  => [
+                        'import' => $this->translator->trans('theme_assistant.label.import', [], 'contao_default'),
+                        'store'  => $this->translator->trans('theme_assistant.label.content-store', [], 'contao_default'),
+                        'empty'  => $this->translator->trans('theme_assistant.content-package.label.empty', [], 'contao_default')
                     ],
-                    'link'     => [
-                        'store'   => $this->translator->trans('theme_assistant.link.store', [], 'contao_default')
+                    'action' => [
+                        'store'  => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
                     ]
                 ]
             )
@@ -150,7 +158,10 @@ class AssistantModuleController extends AbstractController
         $root = Controller::getContainer()->getParameter('kernel.project_dir');
 
         $finder = new Finder();
-        $finder->files()->name('theme.manifest.json')->in($root);
+        $finder
+            ->files()
+            ->name('theme.manifest.json')
+            ->in($root);
 
         if($finder->hasResults())
         {
@@ -167,6 +178,50 @@ class AssistantModuleController extends AbstractController
         return null;
     }
 
+    private function getThemes(): array
+    {
+        $themes = ThemeModel::findAll();
+
+        return array_combine(
+            $themes->fetchEach('id') ?? [],
+            $themes->fetchEach('name') ?? []
+        );
+    }
+
+    private function getFileDirectories(): array
+    {
+        $root = Controller::getContainer()->getParameter('kernel.project_dir');
+        $path  = 'files';
+
+        $finder = new Finder();
+        $finder
+            ->directories()
+            ->in($root . DIRECTORY_SEPARATOR . $path)
+            ->depth('== 0');
+
+        $dirs = [];
+
+        if ($finder->hasResults())
+        {
+            foreach ($finder as $dir)
+            {
+                $dirs[$dir->getRealPath()] = $dir->getBasename();
+            }
+        }
+
+        return $dirs;
+    }
+
+    private function getRootPages(): array
+    {
+        $pages = PageModel::findByType('root');
+
+        return array_combine(
+            $pages->fetchEach('id') ?? [],
+            $pages->fetchEach('title') ?? []
+        );
+    }
+
     /**
      * Returns content packages with extra information
      *
@@ -177,7 +232,11 @@ class AssistantModuleController extends AbstractController
         $root = Controller::getContainer()->getParameter('kernel.project_dir');
 
         $finder = new Finder();
-        $finder->files()->name('*.content')->in($root);
+        $finder
+            ->files()
+            ->name('*.content')
+            ->in($root)
+            ->exclude('system');
 
         if(!$finder->hasResults())
         {
