@@ -23,6 +23,7 @@
 }
 #theme-assistant .modules .module {
   padding: 25px;
+  margin: 0 10px;
   background: #fdfdfd;
   border-radius: 3px;
   box-shadow: rgba(60, 64, 67, 0.3) 0 1px 2px 0, rgba(60, 64, 67, 0.15) 0 1px 3px 1px;
@@ -87,6 +88,41 @@
   display: inline-block;
   padding-left: 20px;
   background: url("/bundles/contaothememanagerbridge/icons/assistant.svg") left center no-repeat;
+}
+
+.theme-assistant-modal.tingle-modal {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgba(0, 0, 0, 0.15);
+}
+.theme-assistant-modal.tingle-modal h2 {
+  margin-bottom: 15px;
+}
+.theme-assistant-modal.tingle-modal .tingle-modal-box {
+  width: 90%;
+  max-width: 350px;
+}
+.theme-assistant-modal.tingle-modal .tingle-modal-box__content {
+  padding: 25px;
+}
+.theme-assistant-modal.tingle-modal .tingle-modal-box__footer {
+  padding: 15px;
+  text-align: right;
+}
+.theme-assistant-modal.tingle-modal .tingle-modal-box__footer button + button {
+  margin-left: 10px;
+}
+.theme-assistant-modal.tingle-modal .widget-container .widget {
+  margin-left: 0;
+  margin-right: 0;
+}
+.theme-assistant-modal.tingle-modal .widget-container .widget + .widget {
+  margin-top: 5px;
+}
+.theme-assistant-modal.tingle-modal .widget-container:after {
+  display: block;
+  content: "";
+  clear: both;
 }
 
 /*# sourceMappingURL=backend.css.map */

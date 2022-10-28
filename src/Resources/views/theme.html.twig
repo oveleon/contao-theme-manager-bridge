@@ -1,7 +1,7 @@
 <div class="preview-box{% if manifest.name is defined %} installed{% endif %}">
     <div class="icon">
-        {% if manifest.image is defined %}
-            {{ manifest.image|raw }}
+        {% if logo is defined %}
+            {{ logo|raw }}
         {% endif %}
         <div class="empty"></div>
     </div>

@@ -27,6 +27,7 @@
 
     .module{
       padding: 25px;
+      margin: 0 10px;
 
       background: #fdfdfd;
       border-radius: 3px;
@@ -117,4 +118,50 @@
   padding-left: 20px;
 
   background: url('/bundles/contaothememanagerbridge/icons/assistant.svg') left center no-repeat;
+}
+
+.theme-assistant-modal.tingle-modal {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgb(0 0 0 / 15%);
+
+  h2{
+    margin-bottom: 15px;
+  }
+
+  .tingle-modal-box{
+    width: 90%;
+    max-width: 350px;
+
+    &__content{
+      padding: 25px;
+    }
+
+    &__footer{
+      padding: 15px;
+      text-align: right;
+
+      button + button{
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .widget-container{
+
+    .widget {
+      margin-left: 0;
+      margin-right: 0;
+
+      + .widget{
+        margin-top: 5px;
+      }
+    }
+
+    &:after{
+      display: block;
+      content: "";
+      clear: both;
+    }
+  }
 }

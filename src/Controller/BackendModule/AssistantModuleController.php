@@ -3,10 +3,14 @@
 namespace Oveleon\ContaoThemeManagerBridge\Controller\BackendModule;
 
 use Contao\Controller;
+use Contao\File;
 use Contao\FrontendTemplate;
 use Contao\Message;
 use Contao\CoreBundle\Image\Studio\Studio;
+use Contao\PageModel;
 use Contao\ThemeModel;
+use Contao\ZipReader;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Annotation\Route;
@@ -73,7 +77,7 @@ class AssistantModuleController extends AbstractController
                 $template = new FrontendTemplate('image');
                 $figure->applyLegacyTemplateData($template);
 
-                $manifest['image'] = $template->parse();
+                $logo = $template->parse();
             }
         }
 
@@ -83,6 +87,7 @@ class AssistantModuleController extends AbstractController
                 '@ContaoThemeManagerBridge/theme.html.twig',
                 [
                     'manifest' => $manifest,
+                    'logo'     => $logo ?? null,
                     'label'    => [
                         'version' => $this->translator->trans('theme_assistant.theme.label.version', [], 'contao_default'),
                         'docs'    => $this->translator->trans('theme_assistant.label.docs', [], 'contao_default'),
@@ -105,34 +110,26 @@ class AssistantModuleController extends AbstractController
      */
     private function loadContentPackageSection(): void
     {
-        $packages = null;
-
-        if($contentPackages = $this->getContentPackages())
-        {
-            foreach ($contentPackages as $contentPackage)
-            {
-                $isInstalled = ThemeModel::countBy(['contentPackage=?'], [$contentPackage->getFilename()]);
-
-                $tag = match($isInstalled) {
-                    0       => $this->translator->trans('theme_assistant.label.installable', [], 'contao_default'),
-                    default => $this->translator->trans('theme_assistant.label.installed', [], 'contao_default')
-                };
-
-                $packages[] = [
-                    'path'        => $contentPackage->getRealPath(),
-                    'tag'         => $tag,
-                    'isInstalled' => $isInstalled
-                ];
-            }
-        }
+        // Prepare content export
+        $themes = ThemeModel::findAll();
+        $pages = PageModel::findByType('root');
 
         $this->sections[] = [
             'title'  => $this->translator->trans('theme_assistant.content-packages.title', [], 'contao_default'),
             'module' => $this->twig->render(
                 '@ContaoThemeManagerBridge/content-package.html.twig',
                 [
-                    'files' => $packages ?? null,
+                    'files'    => $this->getContentPackages(),
+                    'themes'   => array_combine(
+                        $themes->fetchEach('id'),
+                        $themes->fetchEach('name')
+                    ),
+                    'pages'   => array_combine(
+                        $pages->fetchEach('id'),
+                        $pages->fetchEach('title')
+                    ),
                     'label'    => [
+                        'import'  => $this->translator->trans('theme_assistant.label.import', [], 'contao_default'),
                         'export'  => $this->translator->trans('theme_assistant.label.export', [], 'contao_default'),
                         'store'   => $this->translator->trans('theme_assistant.label.content-store', [], 'contao_default'),
                         'empty'   => $this->translator->trans('theme_assistant.content-package.label.empty', [], 'contao_default')
@@ -145,6 +142,9 @@ class AssistantModuleController extends AbstractController
         ];
     }
 
+    /**
+     * Returns the theme manifest
+     */
     private function readThemeManifest(): ?array
     {
         $root = Controller::getContainer()->getParameter('kernel.project_dir');
@@ -167,7 +167,12 @@ class AssistantModuleController extends AbstractController
         return null;
     }
 
-    private function getContentPackages(): ?Finder
+    /**
+     * Returns content packages with extra information
+     *
+     * @throws Exception
+     */
+    private function getContentPackages(): ?array
     {
         $root = Controller::getContainer()->getParameter('kernel.project_dir');
 
@@ -179,6 +184,60 @@ class AssistantModuleController extends AbstractController
             return null;
         }
 
-        return $finder;
+        $packages = null;
+
+        foreach ($finder as $contentPackage)
+        {
+            // Check found packages and enrich them with information
+            $archive = new ZipReader($contentPackage->getRelativePathname());
+
+            // Get all files in archive
+            $fileList = $archive->getFileList();
+
+            // Check if a manifest exists, otherwise skip
+            if(!in_array('content.manifest.json', $fileList))
+            {
+                continue;
+            }
+
+            // Set pointer to manifest file
+            if(!$archive->getFile('content.manifest.json'))
+            {
+                throw new Exception('The manifest file cannot be determined.');
+            }
+
+            // Read manifest file
+            $manifest = json_decode($archive->unzip(), true);
+
+            // Try to get a logo if one was supplied
+            if($archive->getFile('logo.png'))
+            {
+                $file = new File('system/tmp/'. substr(md5(mt_rand()), 0, 7) . '.png');
+                $file->write($archive->unzip());
+                $file->close();
+
+                $figure = $this->studio
+                    ->createFigureBuilder()
+                    ->setSize([0, 60])
+                    ->fromPath($file->path)
+                    ->buildIfResourceExists();
+
+                if($figure)
+                {
+                    $template = new FrontendTemplate('image');
+                    $figure->applyLegacyTemplateData($template);
+
+                    $logo = $template->parse();
+                }
+            }
+
+            $packages[] = [
+                'path'     => $contentPackage->getRealPath(),
+                'manifest' => $manifest,
+                'logo'     => $logo ?? null
+            ];
+        }
+
+        return $packages;
     }
 }

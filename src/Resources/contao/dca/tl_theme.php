@@ -10,5 +10,5 @@ ArrayUtil::arrayInsert($GLOBALS['TL_DCA']['tl_theme']['list']['global_operations
 ]);
 
 $GLOBALS['TL_DCA']['tl_theme']['fields']['contentPackage'] = [
-    'sql' => "varchar(128) NOT NULL default ''"
+    'sql' => "blob NULL"
 ];

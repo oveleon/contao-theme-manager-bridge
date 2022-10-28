@@ -1,19 +1,17 @@
 <div class="modules">
     {% for contentPackage in files %}
         <div class="module">
-            <div class="preview-box{% if contentPackage.isInstalled %} installed{% endif %}">
+            <div class="preview-box">
                 <div class="icon">
+                    {% if contentPackage.logo is defined %}
+                        {{ contentPackage.logo|raw }}
+                    {% endif %}
                     <div class="empty"></div>
                 </div>
                 <div>
-                    <div class="name">Zahnarzt</div>
-                    <div class="tags">
-                        <div class="version">
-                            {{ contentPackage.tag }}
-                        </div>
-                    </div>
+                    <div class="name">{{ contentPackage.manifest.name }}</div>
                     <div class="actions">
-                        <a href="#" target="_blank" class="tl_submit">Installieren</a>
+                        <a href="#" target="_blank" class="tl_submit import">{{ label.import }}</a>
                     </div>
                 </div>
             </div>
@@ -33,5 +31,44 @@
 {% endif %}
 
 <div class="actions">
+    <a href="#" target="_blank" class="tl_submit content-export">{{ label.export }}</a>
     <a href="{{ link.store }}" target="_blank" class="tl_submit">{{ label.store }}</a>
 </div>
+
+<template id="content-import-template">
+    <form>
+
+    </form>
+</template>
+
+<template id="content-export-template">
+    <form action="/contao/content/export" id="tl_export" method="post">
+        <h2>Inhalts-Paket exportieren</h2>
+        <div class="widget-container">
+            <div class="widget">
+                <h3><label for="ctrl_theme">Theme</label></h3>
+                <select name="theme" id="ctrl_theme" class="tl_select tl_chosen">
+                    {% for id, name in themes %}
+                        <option value="{{ id }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="widget">
+                <h3><label for="ctrl_page">Seitenstartpunkt</label></h3>
+                <select name="page" id="ctrl_page" class="tl_select tl_chosen">
+                    {% for id, name in pages %}
+                        <option value="{{ id }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="widget">
+                <h3><label for="ctrl_name">Name<span class="mandatory">*</span></label></h3>
+                <input name="name" id="ctrl_name" class="tl_text" required/>
+            </div>
+            <div class="widget">
+                <h3><label for="ctrl_name">Version<span class="mandatory">*</span></label></h3>
+                <input name="version" id="ctrl_version" class="tl_text" placeholder="1.0.0" required/>
+            </div>
+        </div>
+    </form>
+</template>

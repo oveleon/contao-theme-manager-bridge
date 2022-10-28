@@ -2,11 +2,15 @@
 
 namespace Oveleon\ContaoThemeManagerBridge\Controller;
 
+use Contao\StringUtil;
+use Exception;
 use Oveleon\ContaoThemeManagerBridge\Export\ContentPackageExport;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/contao/theme/export/{id}",
+ * @Route("/contao/content/export",
  *     name=ContentPackageExportController::class,
  *     defaults={"_scope": "backend"}
  * )
@@ -14,11 +18,26 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContentPackageExportController
 {
     public function __construct(
-        private readonly ContentPackageExport $exporter
+        private readonly ContentPackageExport $exporter,
+        private readonly RequestStack $requestStack,
     ){}
 
-    public function __invoke(int $id): void
+    /**
+     * @throws Exception
+     */
+    public function __invoke(): Response
     {
-        $this->exporter->export($id);
+        $request = $this->requestStack->getCurrentRequest();
+
+        $this->exporter
+            ->setManifestData([
+                'name'    => $request->get('name'),
+                'version' => $request->get('version')
+            ])
+            ->setFileName(StringUtil::sanitizeFileName($request->get('name')))
+            ->export($request->get('theme'), $request->get('page'))
+            ->sendToBrowser();
+
+        return new Response('');
     }
 }
