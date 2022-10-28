@@ -52,11 +52,15 @@
     width: 100%;
     max-width: 280px;
     margin: 0 15px 20px;
-    overflow: hidden;
-    border-radius: 10px;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    background: #fff;
+
     text-align: center;
+
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0;
+
+    overflow: hidden;
+    transition: box-shadow .3s;
 
     .header{
       position: relative;
@@ -141,6 +145,10 @@
         }
       }
     }
+
+    &:hover{
+      box-shadow: rgba(0, 0, 0, 0.25) 0 25px 50px -12px;
+    }
   }
 
   .tags, .actions {
@@ -193,6 +201,7 @@
   .tingle-modal-box{
     width: 90%;
     max-width: 350px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0 5px 15px 0;
 
     &__content{
       padding: 25px;
