@@ -12,6 +12,7 @@ use Contao\ThemeModel;
 use Contao\ZipReader;
 use Exception;
 use Oveleon\ContaoThemeManagerBridge\Controller\ContentPackageExportController;
+use Oveleon\ContaoThemeManagerBridge\Controller\ContentPackageImportController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,7 +55,7 @@ class AssistantModuleController extends AbstractController
                     'backLabel'         => $this->translator->trans('MSC.backBT', [], 'contao_default'),
                     'backTitle'         => $this->translator->trans('MSC.backBTTitle', [], 'contao_default'),
                     'contentExport'     => $this->translator->trans('theme_assistant.content-package.label.export', [], 'contao_default'),
-                    'contentExportDesc' => $this->translator->trans('theme_assistant.content-package.label.description', [], 'contao_default'),
+                    'contentExportDesc' => $this->translator->trans('theme_assistant.content-package.label.exportDescription', [], 'contao_default'),
                     'contentStore'      => $this->translator->trans('theme_assistant.label.content-store', [], 'contao_default'),
                     'theme'             => $this->translator->trans('theme_assistant.label.theme', [], 'contao_default'),
                     'pageEntry'         => $this->translator->trans('theme_assistant.label.pageEntry', [], 'contao_default'),
@@ -66,7 +67,7 @@ class AssistantModuleController extends AbstractController
                 'action' => [
                     'back'          => 'contao?do=themes',
                     'store'         => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
-                    'contentExport' => $this->router->generate(ContentPackageExportController::class),
+                    'contentExport' => $this->router->generate(ContentPackageExportController::class)
                 ],
                 'rt'          => $this->csrfTokenManager->getDefaultTokenValue(),
                 'themes'      => $this->getThemes(),
@@ -138,13 +139,20 @@ class AssistantModuleController extends AbstractController
                 [
                     'files'  => $this->getContentPackages(),
                     'label'  => [
-                        'import' => $this->translator->trans('theme_assistant.label.import', [], 'contao_default'),
-                        'store'  => $this->translator->trans('theme_assistant.label.content-store', [], 'contao_default'),
-                        'empty'  => $this->translator->trans('theme_assistant.content-package.label.empty', [], 'contao_default')
+                        'version'    => $this->translator->trans('theme_assistant.theme.label.version', [], 'contao_default'),
+                        'import'     => $this->translator->trans('theme_assistant.label.import', [], 'contao_default'),
+                        'store'      => $this->translator->trans('theme_assistant.label.content-store', [], 'contao_default'),
+                        'empty'      => $this->translator->trans('theme_assistant.content-package.label.empty', [], 'contao_default'),
+                        'importDesc' => $this->translator->trans('theme_assistant.content-package.label.importDescription', [], 'contao_default'),
+                        'pageEntry'  => $this->translator->trans('theme_assistant.label.pageEntry', [], 'contao_default'),
+                        'createRoot' => $this->translator->trans('theme_assistant.label.createRoot', [], 'contao_default'),
                     ],
                     'action' => [
-                        'store'  => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
-                    ]
+                        'store'         => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
+                        'contentImport' => $this->router->generate(ContentPackageImportController::class)
+                    ],
+                    'pages'  => $this->getRootPages(),
+                    'rt'     => $this->csrfTokenManager->getDefaultTokenValue(),
                 ]
             )
         ];
@@ -214,7 +222,10 @@ class AssistantModuleController extends AbstractController
 
     private function getRootPages(): array
     {
-        $pages = PageModel::findByType('root');
+        if(!$pages = PageModel::findByType('root'))
+        {
+            return [];
+        }
 
         return array_combine(
             $pages->fetchEach('id') ?? [],
@@ -291,7 +302,9 @@ class AssistantModuleController extends AbstractController
             }
 
             $packages[] = [
-                'path'     => $contentPackage->getRealPath(),
+                'name'     => $contentPackage->getFilenameWithoutExtension(),
+                'realPath' => $contentPackage->getRealPath(),
+                'path'     => $contentPackage->getPath(),
                 'manifest' => $manifest,
                 'logo'     => $logo ?? null
             ];

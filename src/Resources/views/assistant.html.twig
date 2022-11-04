@@ -25,12 +25,6 @@
         {% endfor %}
     </div>
 
-    <template id="content-import-template">
-        <form>
-
-        </form>
-    </template>
-
     <template id="content-export-template">
         <form action="{{ action.contentExport }}" id="tl_export" method="post">
             <h2>{{ label.exportHl }}</h2>
@@ -72,7 +66,6 @@
             <input type="hidden" name="REQUEST_TOKEN" value="{{ rt }}">
         </form>
     </template>
-
 
     <script src="{{ asset('bundles/contaothememanagerbridge/build/main.js') }}"></script>
 {% endblock %}

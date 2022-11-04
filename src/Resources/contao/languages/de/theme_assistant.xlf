@@ -31,6 +31,10 @@
         <source>Root page</source>
         <target>Seitenstartpunkt</target>
       </trans-unit>
+      <trans-unit id="theme_assistant.label.createRoot">
+        <source>Create new root page</source>
+        <target>Neuen Seitenstartpunkt anlegen</target>
+      </trans-unit>
       <trans-unit id="theme_assistant.label.directory">
         <source>Directory</source>
         <target>Ordner</target>
@@ -68,7 +72,7 @@
       </trans-unit>
       <trans-unit id="theme_assistant.label.content-store">
         <source>Search content packages</source>
-        <target>Inhalts-Pakte finden</target>
+        <target>Inhalts-Pakete finden</target>
       </trans-unit>
       <trans-unit id="theme_assistant.link.store">
         <source>https://www.oveleon.de</source>
@@ -98,9 +102,13 @@
         <source>Export content packages</source>
         <target>Inhalts-Pakete exportieren</target>
       </trans-unit>
-      <trans-unit id="theme_assistant.content-package.label.description">
+      <trans-unit id="theme_assistant.content-package.label.exportDescription">
         <source>You are about to export a content package of the current Contao instance. Select the associated connections, assign a name as well as a version number and click Export.</source>
         <target>Sie sind dabei, ein Inhalts-Paket der aktuellen Contao-Instanz zu exportieren. Wählen Sie die zugehörigen Verbindungen, vergeben Sie einen Namen sowie eine Versionsnummer und klicken Sie auf Exportieren.</target>
+      </trans-unit>
+      <trans-unit id="theme_assistant.content-package.label.importDescription">
+        <source>!Sie sind dabei, ein Inhalts-Paket zu importieren.</source>
+        <target>!Sie sind dabei, ein Inhalts-Paket zu importieren.</target>
       </trans-unit>
       <trans-unit id="theme_assistant.content-package.label.empty">
         <target>Currently no content package is installed</target>

@@ -23,6 +23,7 @@ use Contao\MemberGroupModel;
 use Contao\Model\Collection;
 use Contao\ModuleModel;
 use Contao\NewsArchiveModel;
+use Contao\NewsFeedModel;
 use Contao\NewsletterChannelModel;
 use Contao\NewsletterDenyListModel;
 use Contao\NewsletterModel;
@@ -149,12 +150,6 @@ class ContentPackageExport
         // Export pages
         $pageIds = $this->exportPages($rootPageId);
 
-        // Export articles
-        $articleIds = $this->exportMany(ArticleModel::class, $pageIds);
-
-        // Export content elements
-        $this->exportMany(ContentModel::class, $articleIds);
-
         // Export theme and sub tables
         $this->exportOne(ThemeModel::class, $themeId);
         $this->exportMany(StyleSheetModel::class, [$themeId]);
@@ -170,12 +165,11 @@ class ContentPackageExport
         $this->exportMany(FormFieldModel::class);
         $this->exportMany(UserGroupModel::class);
         $this->exportMany(MemberGroupModel::class);
-        $this->exportMany(FaqModel::class);
         $this->exportMany(FaqCategoryModel::class);
-        $this->exportMany(NewsModel::class);
+        $this->exportMany(FaqModel::class);
         $this->exportMany(NewsArchiveModel::class);
+        $this->exportMany(NewsFeedModel::class);
         $this->exportMany(CalendarModel::class);
-        $this->exportMany(CalendarEventsModel::class);
         $this->exportMany(CalendarFeedModel::class);
         $this->exportMany(CommentsModel::class);
         $this->exportMany(CommentsNotifyModel::class);
@@ -184,8 +178,24 @@ class ContentPackageExport
         $this->exportMany(NewsletterDenyListModel::class);
         $this->exportMany(NewsletterRecipientsModel::class);
 
+        // Export tables with content elements
+        $articleIds  = $this->exportMany(ArticleModel::class, $pageIds);
+        $newsIds     = $this->exportMany(NewsModel::class);
+        $calendarIds = $this->exportMany(CalendarEventsModel::class);
+
+        // Export content elements by article ids and parent table
+        $this->exportMany(ContentModel::class, $articleIds, ArticleModel::getTable());
+
+        // Export content elements by news ids and parent table
+        $this->exportMany(ContentModel::class, $newsIds, NewsModel::getTable());
+
+        // Export content elements by calendar event ids and parent table
+        $this->exportMany(ContentModel::class, $calendarIds, CalendarEventsModel::getTable());
+
         // Export directories
         $this->exportDirectories();
+
+        // ToDo: Hook
 
         // Close archive
         $this->archive->close();
@@ -209,14 +219,14 @@ class ContentPackageExport
         // Collect page ids by root page
         $pageIds = [
             $parentId,
-            ... Database::getInstance()->getChildRecords($parentId, 'tl_page')
+            ... Database::getInstance()->getChildRecords($parentId, PageModel::getTable())
         ];
 
         // Get page models by ids
         $pages = PageModel::findMultipleByIds($pageIds);
 
         // Creates a file of the model / the collection
-        $this->addCollectionFile($pages, 'tl_page');
+        $this->addCollectionFile($pages, PageModel::getTable());
 
         // Return page ids
         return $pageIds;
@@ -241,7 +251,7 @@ class ContentPackageExport
     /**
      * Export data by a specific model, table and optionally parent ids
      */
-    protected function exportMany($modelClass, array|bool|null $parentIds = false): ?array
+    protected function exportMany($modelClass, array|bool|null $parentIds = false, ?string $parentTable = null): ?array
     {
         if(null === $parentIds || !class_exists($modelClass))
         {
@@ -264,9 +274,19 @@ class ContentPackageExport
                 {
                     foreach ($model->getModels() as $mod)
                     {
+                        if($parentTable && $mod->ptable !== $parentTable)
+                        {
+                            continue;
+                        }
+
                         $collection[] = $mod->current();
                     }
 
+                    continue;
+                }
+
+                if($parentTable && $model->ptable !== $parentTable)
+                {
                     continue;
                 }
 
@@ -283,7 +303,7 @@ class ContentPackageExport
         $collection = new Collection($collection, $table);
 
         // Add collection to the archive
-        $this->addCollectionFile($collection, $table);
+        $this->addCollectionFile($collection, $table . ($parentTable ? '.' . $parentTable : ''));
 
         // Return ids
         return $collection->fetchEach('id');
