@@ -188,7 +188,10 @@ class AssistantModuleController extends AbstractController
 
     private function getThemes(): array
     {
-        $themes = ThemeModel::findAll();
+        if(!$themes = ThemeModel::findAll())
+        {
+            return [];
+        }
 
         return array_combine(
             $themes->fetchEach('id') ?? [],

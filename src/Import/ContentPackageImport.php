@@ -14,10 +14,16 @@ class ContentPackageImport
 {
     const FOREIGN_KEY = 'pid';
 
+    const CALLBACK_EACH_MODULE = 'module';      // Parameter: $model
+    const CALLBACK_ON_FINISHED = 'finished';    // Parameter: $idConnections
+
     protected ZipReader $archive;
 
     protected ?array $manifest = null;
     protected ?int $rootPage = null;
+
+    protected array $connections = [];
+    protected ?array $callbacks = null;
 
     /**
      * Sets a root page in which new pages are to be imported
@@ -25,6 +31,29 @@ class ContentPackageImport
     public function setRootPage(int $pageId): void
     {
         $this->rootPage = $pageId;
+    }
+
+    /**
+     * Register a callback
+     */
+    public function registerCallback(string $callbackMode, string $filename, callable $callback): void
+    {
+        if(null === $this->callbacks)
+        {
+            $this->callbacks = [
+                self::CALLBACK_EACH_MODULE => [],
+                self::CALLBACK_ON_FINISHED => []
+            ];
+        }
+
+        if(array_key_exists($filename, $this->callbacks[$callbackMode]))
+        {
+            $this->callbacks[$callbackMode][$filename][] = $callback;
+        }
+        else
+        {
+            $this->callbacks[$callbackMode][$filename] = [$callback];
+        }
     }
 
     /**
@@ -46,62 +75,59 @@ class ContentPackageImport
             $this->archive->reset();
         }
 
+        // Register default callbacks for contao tables
+        $this->registerDefaultCallbacks();
+
+        // Todo: Hook (Register Callbacks)
+
         /**
          * ToDo:
-         * - (Register callbacks based on tables or file names (CALLBACK_MODEL, CALLBACK_ON_FINISH) and handle them in import methods (e.g. see Line 92))
-         *   - (Create hook to register "callbackRules" before starting import)
-         * - (Collect IDs based on table globally to retrieve them in the method `importNestedTable`)
          * - Create callback to overwrite jumpTo in News Archives
-         * - Import files and manifest
+         * - Import files, tl_files and manifest
          */
 
         // Import theme and child tables
-        $themeIds         = $this->importTable('tl_theme');
-        $styleSheetIds    = $this->importNestedTable('tl_style_sheet', $themeIds);
-        $styleIds         = $this->importNestedTable('tl_style', $styleSheetIds);
-        $imageSizeIds     = $this->importNestedTable('tl_image_size', $themeIds);
-        $imageSizeItemIds = $this->importNestedTable('tl_image_size_item', $imageSizeIds);
-        $moduleIds        = $this->importNestedTable('tl_module', $themeIds);
-        $layoutIds        = $this->importNestedTable('tl_layout', $themeIds);
+        $this->importTable('tl_theme');
+        $this->importNestedTable('tl_style_sheet', 'tl_theme');
+        $this->importNestedTable('tl_style', 'tl_style_sheet');
+        $this->importNestedTable('tl_image_size', 'tl_theme');
+        $this->importNestedTable('tl_image_size_item', 'tl_image_size');
+        $this->importNestedTable('tl_module', 'tl_theme');
+        $this->importNestedTable('tl_layout', 'tl_theme');
 
         // Import other tables
-        $userGroupIds     = $this->importTable('tl_user_group');
-        $memberGroupIds   = $this->importTable('tl_member_group');
+        $this->importTable('tl_user_group');
+        $this->importTable('tl_member_group');
 
-        $faqCategoryIds   = $this->importTable('tl_faq_category');
-        $faqIds           = $this->importNestedTable('tl_faq', $faqCategoryIds);
+        $this->importTable('tl_faq_category');
+        $this->importNestedTable('tl_faq', 'tl_faq_category');
 
-        $newsArchiveIds   = $this->importTable('tl_news_archive'); // ToDo: Add callback -> overwrite jumpTo
-        $newsFeedIds      = $this->importTable('tl_news_feed');
-        $newsIds          = $this->importNestedTable('tl_news', $newsArchiveIds);
+        $this->importTable('tl_news_archive'); // ToDo: Add callback -> overwrite jumpTo
+        $this->importTable('tl_news_feed');
+        $this->importNestedTable('tl_news', 'tl_news_archive');
 
-        $calendarIds      = $this->importTable('tl_calendar');
-        $calendarFeedIds  = $this->importTable('tl_calendar_feed');
-        $calendarEventIds = $this->importNestedTable('tl_calendar_events', $calendarIds);
+        $this->importTable('tl_calendar');
+        $this->importTable('tl_calendar_feed');
+        $this->importNestedTable('tl_calendar_events', 'tl_calendar');
 
-        $commentIds       = $this->importTable('tl_comments');
-        $commentNotifyIds = $this->importTable('tl_comments_notify');
+        $this->importTable('tl_comments');
+        $this->importTable('tl_comments_notify');
 
-        $nlChannelIds     = $this->importTable('tl_newsletter_channel');
-        $nlDenyListIds    = $this->importTable('tl_newsletter_deny_list');
-        $nlIds            = $this->importNestedTable('tl_newsletter', $nlChannelIds);
-        $nlRecipientsIds  = $this->importNestedTable('tl_newsletter_recipients', $nlChannelIds);
+        $this->importTable('tl_newsletter_channel');
+        $this->importTable('tl_newsletter_deny_list');
+        $this->importNestedTable('tl_newsletter', 'tl_newsletter_channel');
+        $this->importNestedTable('tl_newsletter_recipients', 'tl_newsletter_channel');
 
-        $formIds          = $this->importTable('tl_form');
-        $formFieldIds     = $this->importNestedTable('tl_form_field', $formIds);
+        $this->importTable('tl_form');
+        $this->importNestedTable('tl_form_field', 'tl_form');
 
         // Import pages, articles and content elements
-        $pageIds          = $this->importTreeTable('tl_page', $this->rootPage, fn($model) => $this->overwritePageLayout($model, $layoutIds));
-        $articleIds       = $this->importNestedTable('tl_article', $pageIds);
+        $this->importTreeTable('tl_page', $this->rootPage);
+        $this->importNestedTable('tl_article', 'tl_page');
 
-        $articleContentIds  = $this->importNestedTable('tl_content.tl_article', $articleIds, fn($model) => $this->overwriteContentElement($model, $articleIds, $formIds, $moduleIds));
-        $newsContentIds     = $this->importNestedTable('tl_content.tl_news', $newsIds, fn($model) => $this->overwriteContentElement($model, $articleIds, $formIds, $moduleIds));
-        $calendarContentIds = $this->importNestedTable('tl_content.tl_calendar_events', $newsIds, fn($model) => $this->overwriteContentElement($model, $articleIds, $formIds, $moduleIds));
-
-        // Overwrite connection ids for content elements of type alias
-        $this->overwriteAliasContentElement($articleContentIds);
-        $this->overwriteAliasContentElement($newsContentIds);
-        $this->overwriteAliasContentElement($calendarContentIds);
+        $this->importNestedTable('tl_content.tl_article', 'tl_article');
+        $this->importNestedTable('tl_content.tl_news', 'tl_news');
+        $this->importNestedTable('tl_content.tl_calendar_events', 'tl_calendar_events');
 
         // Fixme: Get files from manifest (directories)?
         while($this->archive->next())
@@ -123,16 +149,16 @@ class ContentPackageImport
     }
 
     /**
-     * Import table and return a new collection of ids
+     * Import table by filename and return a new collection of ids
      *
      * @throws Exception
      */
-    protected function importTable(string $filename, ?callable $modelCallback = null): array
+    protected function importTable(string $filename): void
     {
         // Get table content
         if(!$tableContent = $this->unzipFileContent($filename))
         {
-            return [];
+            return;
         }
 
         // Get model class by table
@@ -150,29 +176,43 @@ class ContentPackageImport
             $model = new $modelClass();
             $model->setRow($row);
 
-            if($modelCallback)
+            if($callbacks = $this->getCallbacks(self::CALLBACK_EACH_MODULE, $filename))
             {
-                call_user_func($modelCallback, $model);
+                foreach ($callbacks as $callback)
+                {
+                    call_user_func($callback, $model);
+                }
             }
 
             // Save model and set new id to collection
             $idCollection[ $id ] = ($model->save())->id;
         }
 
-        return $idCollection;
+        $this->connections[ $filename ] = $idCollection;
+
+        if($callbacks = $this->getCallbacks(self::CALLBACK_ON_FINISHED, $filename))
+        {
+            foreach ($callbacks as $callback)
+            {
+                call_user_func($callback, $idCollection);
+            }
+        }
     }
 
     /**
-     * Import table based on a parent table
+     * Import table by filename based on a parent table
      *
      * @throws Exception
      */
-    protected function importNestedTable(string $filename, array $parentIds, ?callable $modelCallback = null): array
+    protected function importNestedTable(string $filename, string $parentTable): void
     {
+        // Get parent ids
+        $parentIds = $this->connections[$parentTable] ?? null;
+
         // Get table content
-        if(!($tableContent = $this->unzipFileContent($filename)) || !count($parentIds))
+        if(!($tableContent = $this->unzipFileContent($filename)) || null === $parentIds)
         {
-            return [];
+            return;
         }
 
         // Get model class by table
@@ -194,36 +234,47 @@ class ContentPackageImport
             // Determine parent
             $model->pid = $parentIds[$row[self::FOREIGN_KEY]];
 
-            if($modelCallback)
+            if($callbacks = $this->getCallbacks(self::CALLBACK_EACH_MODULE, $filename))
             {
-                call_user_func($modelCallback, $model);
+                foreach ($callbacks as $callback)
+                {
+                    call_user_func($callback, $model);
+                }
             }
 
             // Save model and set new id to collection
             $idCollection[ $id ] = ($model->save())->id;
         }
 
-        return $idCollection;
+        $this->connections[ $filename ] = $idCollection;
+
+        if($callbacks = $this->getCallbacks(self::CALLBACK_ON_FINISHED, $filename))
+        {
+            foreach ($callbacks as $callback)
+            {
+                call_user_func($callback, $idCollection);
+            }
+        }
     }
 
     /**
-     * Import tables from mode DataContainer::MODE_TREE
+     * Import table by filename from mode DataContainer::MODE_TREE
      *
      * @throws Exception
      */
-    protected function importTreeTable(string $table, ?int $parentId = null, ?callable $modelCallback = null): array
+    protected function importTreeTable(string $filename, ?int $parentId = null): void
     {
         // Get table content
-        if(!$tableContent = $this->unzipFileContent($table))
+        if(!$tableContent = $this->unzipFileContent($filename))
         {
-            return [];
+            return;
         }
 
         // Group rows by pid
-        $groups = $this->group($tableContent[$table]);
+        $groups = $this->group($tableContent[$filename]);
 
         // Get model class by table
-        $modelClass = Model::getClassFromTable($table);
+        $modelClass = Model::getClassFromTable($filename);
 
         // Collection of parent id connections
         $idCollection = [];
@@ -253,9 +304,12 @@ class ContentPackageImport
                     $model->pid = $idCollection[$pid];
                 }
 
-                if($modelCallback)
+                if($callbacks = $this->getCallbacks(self::CALLBACK_EACH_MODULE, $filename))
                 {
-                    call_user_func($modelCallback, $model);
+                    foreach ($callbacks as $callback)
+                    {
+                        call_user_func($callback, $model);
+                    }
                 }
 
                 // Save model and set new id to collection
@@ -263,7 +317,15 @@ class ContentPackageImport
             }
         }
 
-        return $idCollection;
+        $this->connections[ $filename ] = $idCollection;
+
+        if($callbacks = $this->getCallbacks(self::CALLBACK_ON_FINISHED, $filename))
+        {
+            foreach ($callbacks as $callback)
+            {
+                call_user_func($callback, $idCollection);
+            }
+        }
     }
 
     protected function importFile(): void
@@ -272,11 +334,46 @@ class ContentPackageImport
     }
 
     /**
-     * Returns the model based on a table with table name verification
+     * Return all callbacks by callback mode and filename
      */
-    protected function getClassFromFileName(string $table): string
+    protected function getCallbacks(string $callbackMode, string $filename): ?array
     {
-        return Model::getClassFromTable(strtok($table, '.'));
+        return $this->callbacks[$callbackMode][$filename] ?? null;
+    }
+
+    /**
+     * Register default callbacks for contao tables
+     */
+    private function registerDefaultCallbacks(): void
+    {
+        // Handle layout connections for each page
+        $this->registerCallback(self::CALLBACK_EACH_MODULE, 'tl_page', fn($model) => $this->overwritePageLayout($model));
+
+        // Handle content element connections
+        $this->registerCallback(self::CALLBACK_EACH_MODULE, 'tl_content.tl_article', fn($model) => $this->overwriteContentElement($model));
+        $this->registerCallback(self::CALLBACK_EACH_MODULE, 'tl_content.tl_news', fn($model) => $this->overwriteContentElement($model));
+        $this->registerCallback(self::CALLBACK_EACH_MODULE, 'tl_content.tl_calendar_events', fn($model) => $this->overwriteContentElement($model));
+
+        // Overwrite connection ids for content elements of type alias
+        $this->registerCallback(self::CALLBACK_ON_FINISHED, 'tl_content.tl_article', fn($isConnection) => $this->overwriteAliasContentElement($isConnection));
+        $this->registerCallback(self::CALLBACK_ON_FINISHED, 'tl_content.tl_news', fn($isConnection) => $this->overwriteAliasContentElement($isConnection));
+        $this->registerCallback(self::CALLBACK_ON_FINISHED, 'tl_content.tl_calendar_events', fn($isConnection) => $this->overwriteAliasContentElement($isConnection));
+    }
+
+    /**
+     * Returns the model based on a filename with table name verification
+     */
+    protected function getClassFromFileName(string $filename): string
+    {
+        return Model::getClassFromTable($this->getTableFromFileName($filename));
+    }
+
+    /**
+     * Returns the table based on a table with table name verification
+     */
+    protected function getTableFromFileName(string $filename): string
+    {
+        return strtok($filename, '.');
     }
 
     /**
@@ -327,10 +424,10 @@ class ContentPackageImport
     /**
      * Overwrites the layout id from a page
      */
-    private function overwritePageLayout($model, ?array $layoutIds): void
+    private function overwritePageLayout($model): void
     {
         /** @var PageModel $model */
-        if($model->includeLayout)
+        if($model->includeLayout && ($layoutIds = ($this->connections ?? null)))
         {
             $model->layout = $layoutIds[ $model->layout ] ?? 0;
         }
@@ -339,25 +436,25 @@ class ContentPackageImport
     /**
      * Overwrites connected ids in a content element
      */
-    private function overwriteContentElement($model, ?array $articleIds, ?array $formIds, ?array $moduleIds): void
+    private function overwriteContentElement($model): void
     {
         /** @var ContentModel $model */
         switch($model->type)
         {
             case 'article':
-                $model->articleAlias = $articleIds[ $model->articleAlias ] ?? 0;
+                $model->articleAlias = $this->connections['tl_article'][ $model->articleAlias ] ?? 0;
                 break;
 
             case 'form':
-                $model->form = $formIds[ $model->form ] ?? 0;
+                $model->form = $this->connections['tl_form'][ $model->form ] ?? 0;
                 break;
 
             case 'module':
-                $model->module = $moduleIds[ $model->module ] ?? 0;
+                $model->module = $this->connections['tl_module'][ $model->module ] ?? 0;
                 break;
 
             case 'teaser':
-                $model->article = $articleIds[ $model->article ] ?? 0;
+                $model->article = $this->connections['tl_article'][ $model->article ] ?? 0;
                 break;
         }
     }
