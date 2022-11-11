@@ -20,7 +20,8 @@
         "contao/core-bundle": "^4.13",
         "symfony/config": "^5.4 || ^6.0",
         "symfony/dependency-injection": "^5.4 || ^6.0",
-        "symfony/http-kernel": "^5.4 || ^6.0"
+        "symfony/http-kernel": "^5.4 || ^6.0",
+        "knplabs/github-api": "^3.9"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.0"
