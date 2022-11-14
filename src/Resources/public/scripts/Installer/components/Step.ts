@@ -1,10 +1,13 @@
 import Container from "./Container"
+import Modal from "./Modal";
 
-export default class Step extends Container
+export default abstract class Step extends Container
 {
-    static stepId: number
+    static stepId: number = 0
 
-    constructor() {
+    constructor(
+        protected modal: Modal
+    ) {
         // Auto-increment id
         Step.stepId++
 
@@ -13,7 +16,10 @@ export default class Step extends Container
 
         // Steps are hidden by default
         this.template.hidden = true
+
+        // Set step template (content)
+        this.setTemplate()
     }
 
-
+    abstract setTemplate(): void
 }

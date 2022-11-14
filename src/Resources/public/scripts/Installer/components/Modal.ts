@@ -10,6 +10,8 @@ export default class Modal extends Container
 
     constructor(id: string) {
         super(id)
+
+        // ToDo: Create modal content
     }
 
     addSteps(...step: Step[]): void
@@ -17,6 +19,7 @@ export default class Modal extends Container
         for (const s of step)
         {
             this.steps.push(s)
+            // ToDo: Append steps to modal content
         }
     }
 
@@ -29,9 +32,25 @@ export default class Modal extends Container
         this.currentStep = this.steps[ this.currentIndex ]
 
         // Close other
-
+        this.closeAll()
 
         // Show current step
+        this.currentStep.show()
+
+        // Show modal
         this.show()
+    }
+
+    next(): void
+    {
+        this.open(this.currentIndex++)
+    }
+
+    closeAll(): void
+    {
+        for (const step of this.steps)
+        {
+            step.hide()
+        }
     }
 }
