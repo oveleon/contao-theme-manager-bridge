@@ -66,11 +66,16 @@
         <target>https://www.oveleon.de</target>
       </trans-unit>
 
+      <trans-unit id="theme_assistant.label.registerProduct">
+        <source>register product</source>
+        <target>Produkt registrieren</target>
+      </trans-unit>
+
       <trans-unit id="theme_assistant.label.store">
         <source>Search Themes</source>
         <target>Themes finden</target>
       </trans-unit>
-      <trans-unit id="theme_assistant.label.content-store">
+      <trans-unit id="theme_assistant.label.contentStore">
         <source>Search content packages</source>
         <target>Inhalts-Pakete finden</target>
       </trans-unit>

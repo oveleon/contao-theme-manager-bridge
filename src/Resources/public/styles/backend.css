@@ -1,3 +1,43 @@
+.theme-assistant-modal.tingle-modal {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: rgba(0, 0, 0, 0.15);
+}
+.theme-assistant-modal.tingle-modal h2 {
+  margin-bottom: 15px;
+}
+.theme-assistant-modal.tingle-modal p {
+  color: #a1a1a1;
+  line-height: 1.2em;
+}
+.theme-assistant-modal.tingle-modal .tingle-modal-box {
+  width: 90%;
+  max-width: 350px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0 5px 15px 0;
+}
+.theme-assistant-modal.tingle-modal .tingle-modal-box__content {
+  padding: 25px;
+}
+.theme-assistant-modal.tingle-modal .tingle-modal-box__footer {
+  padding: 15px;
+  text-align: right;
+}
+.theme-assistant-modal.tingle-modal .tingle-modal-box__footer button + button {
+  margin-left: 10px;
+}
+.theme-assistant-modal.tingle-modal .widget-container .widget {
+  margin-left: 0;
+  margin-right: 0;
+}
+.theme-assistant-modal.tingle-modal .widget-container .widget + .widget {
+  margin-top: 5px;
+}
+.theme-assistant-modal.tingle-modal .widget-container:after {
+  display: block;
+  content: "";
+  clear: both;
+}
+
 #main:has(#theme-assistant) #main_headline {
   display: flex;
   flex-direction: row;
@@ -132,44 +172,202 @@
   margin: 0 4px;
 }
 
-.theme-assistant-modal.tingle-modal {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+.loader .text {
+  margin-top: 25px;
+  color: #939393;
+}
+.loader .spinner {
+  width: 16px;
+  height: 16px;
+  transform-style: preserve-3d;
+}
+.loader .spinner:not(.disabled) {
+  animation: spinner 2s infinite ease;
+}
+.loader .spinner:not(.disabled) > div {
+  animation: spinner-color 3s infinite ease;
+}
+.loader .spinner > div {
+  background-color: rgba(229, 124, 17, 0.2);
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  border: 1.6px solid #e57c11;
+}
+.loader .spinner div:nth-of-type(1) {
+  transform: translateZ(-8px) rotateY(180deg);
+}
+.loader .spinner div:nth-of-type(2) {
+  transform: rotateY(-270deg) translateX(50%);
+  transform-origin: top right;
+}
+.loader .spinner div:nth-of-type(3) {
+  transform: rotateY(270deg) translateX(-50%);
+  transform-origin: center left;
+}
+.loader .spinner div:nth-of-type(4) {
+  transform: rotateX(90deg) translateY(-50%);
+  transform-origin: top center;
+}
+.loader .spinner div:nth-of-type(5) {
+  transform: rotateX(-90deg) translateY(50%);
+  transform-origin: bottom center;
+}
+.loader .spinner div:nth-of-type(6) {
+  transform: translateZ(8px);
+}
+.loader.cover {
+  position: absolute;
+  inset: 0 0 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+}
+.loader.cover .spinner {
+  scale: 1.5;
+}
+.loader.cover .text {
+  margin-top: 35px;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(45deg) rotateX(-25deg) rotateY(25deg);
+  }
+  50% {
+    transform: rotate(45deg) rotateX(-385deg) rotateY(25deg);
+  }
+  100% {
+    transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
+  }
+}
+@keyframes spinner-color {
+  0% {
+    background-color: rgba(229, 124, 17, 0.2);
+    border-color: #e57c11;
+  }
+  25% {
+    background-color: rgba(145, 192, 66, 0.2);
+    border-color: #91C042;
+  }
+  50% {
+    background-color: rgba(111, 190, 179, 0.2);
+    border-color: #6FBEB3;
+  }
+  75% {
+    background-color: rgba(247, 204, 41, 0.2);
+    border-color: #F7CC29;
+  }
+  100% {
+    background-color: rgba(229, 124, 17, 0.2);
+    border-color: #e57c11;
+  }
+}
+[hidden] {
+  display: none !important;
+}
+
+#installer {
+  position: fixed;
+  inset: 0 0 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
   background: rgba(0, 0, 0, 0.15);
 }
-.theme-assistant-modal.tingle-modal h2 {
+#installer * {
+  box-sizing: border-box;
+}
+#installer > .inside {
+  display: flex;
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  min-height: 390px;
+  background: #fff;
+  box-shadow: rgba(0, 0, 0, 0.15) 0 5px 15px 0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+#installer #steps {
+  width: 100%;
+}
+#installer #steps h2 {
+  font-size: 1.35em;
+  color: #566974;
   margin-bottom: 15px;
 }
-.theme-assistant-modal.tingle-modal p {
-  color: #a1a1a1;
-  line-height: 1.2em;
+#installer #steps p {
+  font-size: 1rem;
+  line-height: 1.25em;
+  color: #8f8f8f;
 }
-.theme-assistant-modal.tingle-modal .tingle-modal-box {
-  width: 90%;
-  max-width: 350px;
-  box-shadow: rgba(0, 0, 0, 0.15) 0 5px 15px 0;
-}
-.theme-assistant-modal.tingle-modal .tingle-modal-box__content {
+#installer #steps > div {
+  display: flex;
+  flex-direction: column;
   padding: 25px;
+  height: 100%;
 }
-.theme-assistant-modal.tingle-modal .tingle-modal-box__footer {
-  padding: 15px;
-  text-align: right;
+#installer .widget {
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 15px;
 }
-.theme-assistant-modal.tingle-modal .tingle-modal-box__footer button + button {
-  margin-left: 10px;
+#installer .widget label {
+  display: inline-block;
+  color: #222;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 7px;
 }
-.theme-assistant-modal.tingle-modal .widget-container .widget {
-  margin-left: 0;
-  margin-right: 0;
+#installer .widget input {
+  font-size: 0.9rem;
+  line-height: 0;
+  border: 1px solid #688191;
+  border-radius: 3px;
+  outline-color: #688191;
 }
-.theme-assistant-modal.tingle-modal .widget-container .widget + .widget {
-  margin-top: 5px;
+#installer .widget input[type=text] {
+  padding: 6px 10px;
 }
-.theme-assistant-modal.tingle-modal .widget-container:after {
-  display: block;
-  content: "";
-  clear: both;
+#installer .actions {
+  margin-top: auto;
+  text-align: center;
+}
+#installer .actions button {
+  display: inline-block;
+  height: 38px;
+  padding: 0 14px;
+  margin: 0 5px;
+  font-weight: 600;
+  line-height: 38px;
+  color: #566974;
+  background-color: transparent;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+}
+#installer .actions button.primary {
+  color: #fff;
+  border-color: #688191;
+  background: #688191;
+}
+
+@media (min-width: 600px) {
+  #installer #steps h2 {
+    font-size: 1.5em;
+    margin-bottom: 22px;
+  }
+  #installer #steps > div {
+    padding: 35px;
+  }
 }
 
 /*# sourceMappingURL=backend.css.map */

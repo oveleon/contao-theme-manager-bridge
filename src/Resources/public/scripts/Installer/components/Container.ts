@@ -10,8 +10,19 @@ export default class Container
 
     private create(): void
     {
-        this.template = <HTMLDivElement>document.createElement('div')
+        this.template = <HTMLDivElement> document.createElement('div')
         this.template.id = this.id
+    }
+
+    appendTo(target: string | HTMLElement): void
+    {
+        if(target instanceof HTMLElement)
+        {
+            target.append(this.template)
+            return;
+        }
+
+        document.querySelector(target).append(this.template)
     }
 
     content(html: string): void

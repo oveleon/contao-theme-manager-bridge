@@ -1,17 +1,40 @@
 import Step from "./Step"
 import Container from "./Container"
+import Loader, {LoaderMode} from "./Loader";
 
 export default class Modal extends Container
 {
     private currentStep: Step
     private currentIndex: number
 
+    private readonly insideContainer: HTMLDivElement
+    private readonly stepContainer: HTMLDivElement
+    private readonly closeElement: HTMLDivElement // ToDo:
+    private readonly loaderElement: Loader
     private steps: Step[] = []
 
     constructor(id: string) {
         super(id)
 
-        // ToDo: Create modal content
+        // Hide modal by default
+        this.hide()
+
+        // Create inside container
+        this.insideContainer = <HTMLDivElement> document.createElement('div')
+        this.insideContainer.classList.add('inside')
+
+        this.template.append(this.insideContainer)
+
+        // Create step container
+        this.stepContainer = <HTMLDivElement> document.createElement('div')
+        this.stepContainer.id = 'steps'
+
+        this.insideContainer.append(this.stepContainer)
+
+        // Create loader
+        this.loaderElement = new Loader()
+        this.loaderElement.setMode(LoaderMode.COVER)
+        this.loaderElement.appendTo(this.insideContainer)
     }
 
     addSteps(...step: Step[]): void
@@ -19,20 +42,23 @@ export default class Modal extends Container
         for (const s of step)
         {
             this.steps.push(s)
-            // ToDo: Append steps to modal content
+
+            s.appendTo(this.stepContainer)
         }
     }
 
     open(startIndex?: number): void
     {
-        if(undefined !== startIndex)
+        console.log(startIndex)
+
+        if(undefined === startIndex)
             startIndex = 0
 
         this.currentIndex = startIndex
         this.currentStep = this.steps[ this.currentIndex ]
 
         // Close other
-        this.closeAll()
+        this.closeSteps()
 
         // Show current step
         this.currentStep.show()
@@ -41,12 +67,28 @@ export default class Modal extends Container
         this.show()
     }
 
-    next(): void
+    loader(state: boolean = true, text?: string): void
     {
-        this.open(this.currentIndex++)
+        state ?
+            this.loaderElement.show() :
+            this.loaderElement.hide()
+
+        text ?
+            this.loaderElement.setText(text) :
+            this.loaderElement.setText('')
     }
 
-    closeAll(): void
+    next(): void
+    {
+        this.open(++this.currentIndex)
+    }
+
+    prev(): void
+    {
+        this.open(--this.currentIndex)
+    }
+
+    closeSteps(): void
     {
         for (const step of this.steps)
         {

@@ -1,0 +1,118 @@
+.loader{
+
+  .text{
+    margin-top: 25px;
+    color: #939393;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    transform-style: preserve-3d;
+  }
+
+  .spinner:not(.disabled) {
+    animation: spinner 2s infinite ease;
+
+    > div{
+      animation: spinner-color 3s infinite ease;
+    }
+  }
+
+  .spinner > div {
+    background-color: rgba(229,124,17,0.2);
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    border: 1.6px solid #e57c11;
+  }
+
+  .spinner div:nth-of-type(1) {
+    transform: translateZ(-8px) rotateY(180deg);
+  }
+
+  .spinner div:nth-of-type(2) {
+    transform: rotateY(-270deg) translateX(50%);
+    transform-origin: top right;
+  }
+
+  .spinner div:nth-of-type(3) {
+    transform: rotateY(270deg) translateX(-50%);
+    transform-origin: center left;
+  }
+
+  .spinner div:nth-of-type(4) {
+    transform: rotateX(90deg) translateY(-50%);
+    transform-origin: top center;
+  }
+
+  .spinner div:nth-of-type(5) {
+    transform: rotateX(-90deg) translateY(50%);
+    transform-origin: bottom center;
+  }
+
+  .spinner div:nth-of-type(6) {
+    transform: translateZ(8px);
+  }
+
+  &.cover{
+    position: absolute;
+    inset: 0 0 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(255,255,255,.8);
+    backdrop-filter: blur(8px);
+
+    .spinner{
+      scale: 1.5;
+    }
+
+    .text{
+      margin-top: 35px;
+    }
+  }
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(45deg) rotateX(-25deg) rotateY(25deg);
+  }
+
+  50% {
+    transform: rotate(45deg) rotateX(-385deg) rotateY(25deg);
+  }
+
+  100% {
+    transform: rotate(45deg) rotateX(-385deg) rotateY(385deg);
+  }
+}
+
+
+@keyframes spinner-color {
+  0% {
+    background-color: rgba(#e57c11,0.2);
+    border-color: #e57c11;
+  }
+
+  25% {
+    background-color: rgba(#91C042,0.2);
+    border-color: #91C042;
+  }
+
+  50% {
+    background-color: rgba(#6FBEB3,0.2);
+    border-color: #6FBEB3;
+  }
+
+  75% {
+    background-color: rgba(#F7CC29,0.2);
+    border-color: #F7CC29;
+  }
+  100% {
+    background-color: rgba(#e57c11,0.2);
+    border-color: #e57c11;
+  }
+}

@@ -3,8 +3,9 @@
 {% block headline %}
     <div id="theme-assistant-headline">{{ label.headline }}</div>
     <div id="theme-assistant-buttons">
-        <a href="#" class="header_theme_import content-export" title="{{ label.contentExport }}" accesskey="b">{{ label.contentExport }}</a>
-        <a href="{{ action.store }}" class="header_store content-store" target="_blank" title="{{ label.contentStore }}" accesskey="b">{{ label.contentStore }}</a>
+        <a href="#" class="header_theme_import content-export" title="{{ label.contentExport }}" accesskey="e">{{ label.contentExport }}</a>
+        <a href="#" id="registerProduct" class="theme_export" title="{{ label.registerProduct }}" accesskey="p">{{ label.registerProduct }}</a>
+        <a href="{{ action.store }}" class="header_store content-store" target="_blank" title="{{ label.contentStore }}">{{ label.contentStore }}</a>
         <a href="{{ action.back }}" class="header_back" title="{{ label.backTitle }}" accesskey="b">{{ label.backLabel }}</a>
     </div>
 {% endblock %}

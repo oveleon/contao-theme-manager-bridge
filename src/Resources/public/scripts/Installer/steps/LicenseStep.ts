@@ -3,33 +3,48 @@ import {i18n} from "../lang/"
 
 export default class LicenseStep extends Step
 {
-    setTemplate(): void
+    getTemplate(): string
     {
-        const content = `
+        return `
             <h2>${i18n('license.headline')}</h2>
             <p>${i18n('license.description')}</p>
-            <form>
+            <form id="license-form">
                 <div class="widget">
                     <label for="license">${i18n('license.form.label.license')}</label>
-                    <input name="license" id="license" />
+                    <input type="text" name="license" id="license" placeholder="XXXX-XXXX-XXXX-XXXX-XXXX" required/>
                 </div>
             </form>
             <div class="actions">
-                <button class="check">${i18n('license.actions.next')}</button>
+                <button data-close>${i18n('actions.close')}</button>
+                <button type="submit" form="license-form" class="check primary">${i18n('license.actions.next')}</button>
             </div>
         `
-
-        this.content(content)
-        this.bindEvents()
     }
 
-    bindEvents()
+    events()
     {
-        this.template.querySelector('.check').addEventListener('click', () => {
-            // ToDo: Check license
+        this.template.querySelector('form').addEventListener('submit', (e) => {
+            e.preventDefault()
 
-            // Check license and goto next step on success
-            this.modal.next()
+            const form = <HTMLFormElement> e.target
+
+            if(!form.checkValidity())
+            {
+                form.reportValidity()
+                return;
+            }
+
+            this.modal.loader(true, 'Produkte werden abgerufen')
+
+            // ToDo: Check license and validate
+
+            setTimeout(() => {
+                this.modal.loader(false)
+                this.modal.next()
+
+                // ToDo: Create globale states to save information
+            }, 4000)
+
         })
     }
 }

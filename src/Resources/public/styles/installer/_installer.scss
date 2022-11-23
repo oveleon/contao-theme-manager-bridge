@@ -1,0 +1,139 @@
+@import "loader";
+
+$text-color: #8f8f8f;
+$primary-text-color: #566974;
+$primary-background-color: #688191;
+
+[hidden]{
+  display: none !important;
+}
+
+#installer{
+  position: fixed;
+  inset: 0 0 0 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 10px;
+  background: rgb(0 0 0 / 15%);
+
+  * {
+    box-sizing: border-box;
+  }
+
+  > .inside{
+    display: flex;
+    position: relative;
+
+    width: 100%;
+    max-width: 700px;
+    min-height: 390px;
+
+    background: #fff;
+    box-shadow: rgba(0, 0, 0, 0.15) 0 5px 15px 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  #steps{
+    width: 100%;
+
+    h2{
+      font-size: 1.35em;
+      color: #566974;
+      margin-bottom: 15px;
+    }
+
+    p{
+      font-size: 1rem;
+      line-height: 1.25em;
+      color: $text-color;
+    }
+
+    > div{
+      display: flex;
+      flex-direction: column;
+      padding: 25px;
+      height: 100%;
+    }
+  }
+
+  .widget{
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 15px;
+
+    label{
+      display: inline-block;
+      color: #222;
+      font-size: .95rem;
+      font-weight: 500;
+      margin-bottom: 7px;
+    }
+
+    input{
+      font-size: .9rem;
+      line-height: 0;
+      border: 1px solid #688191;
+      border-radius: 3px;
+      outline-color: $primary-background-color;
+
+      &[type="text"]{
+        padding: 6px 10px;
+      }
+    }
+  }
+
+  .actions{
+    margin-top: auto;
+    text-align: center;
+
+    button{
+      display: inline-block;
+
+      height: 38px;
+      padding: 0 14px;
+      margin: 0 5px;
+
+      font-weight: 600;
+      line-height: 38px;
+
+      color: $primary-text-color;
+      background-color: transparent;
+
+      text-decoration: none;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+
+      border: 1px solid currentColor;
+      border-radius: 3px;
+
+      &.primary{
+        color: #fff;
+        border-color: $primary-background-color;
+        background: $primary-background-color;
+      }
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  #installer{
+
+    #steps {
+
+      h2 {
+        font-size: 1.5em;
+        margin-bottom: 22px;
+      }
+
+      > div{
+        padding: 35px;
+      }
+    }
+  }
+}
+

@@ -15,11 +15,30 @@ export default abstract class Step extends Container
         super('step' + Step.stepId)
 
         // Steps are hidden by default
-        this.template.hidden = true
+        this.hide()
 
         // Set step template (content)
-        this.setTemplate()
+        this.content(this.getTemplate())
     }
 
-    abstract setTemplate(): void
+    content(html: string): void
+    {
+        super.content(html)
+
+        // Bind default events
+        this.defaultEvents()
+
+        // Bind custom events
+        this.events()
+    }
+
+    defaultEvents(): void
+    {
+        this.template.querySelector('[data-close]')?.addEventListener('click', () => this.modal.hide())
+        this.template.querySelector('[data-prev]')?.addEventListener('click', () => this.modal.prev())
+    }
+
+    protected events(): void {}
+
+    protected abstract getTemplate(): string
 }
