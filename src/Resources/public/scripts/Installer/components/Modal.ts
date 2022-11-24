@@ -41,19 +41,16 @@ export default class Modal extends Container
     {
         for (const s of step)
         {
+            s.addModal(this)
+
             this.steps.push(s)
 
             s.appendTo(this.stepContainer)
         }
     }
 
-    open(startIndex?: number): void
+    open(startIndex: number = 0): void
     {
-        console.log(startIndex)
-
-        if(undefined === startIndex)
-            startIndex = 0
-
         this.currentIndex = startIndex
         this.currentStep = this.steps[ this.currentIndex ]
 

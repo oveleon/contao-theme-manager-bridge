@@ -1,6 +1,6 @@
 import tingle from "tingle.js"
 import "tingle.js/dist/tingle.css"
-import {getTemplate} from "../Utils/utils";
+import {getTemplate} from "../Utils/dom";
 
 /**
  * Import content package

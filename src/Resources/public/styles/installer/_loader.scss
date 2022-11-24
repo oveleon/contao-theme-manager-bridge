@@ -11,7 +11,7 @@
     transform-style: preserve-3d;
   }
 
-  .spinner:not(.disabled) {
+  &.play .spinner {
     animation: spinner 2s infinite ease;
 
     > div{

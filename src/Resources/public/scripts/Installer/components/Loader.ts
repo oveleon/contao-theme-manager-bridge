@@ -41,9 +41,9 @@ export default class Loader extends Container
         this.template.append(this.spinnerContainer)
         this.template.append(this.textContainer)
 
-        // Loader are hidden by default
+        // Loader defaults
         this.hide()
-
+        this.play()
         this.setMode(LoaderMode.INLINE)
     }
 
@@ -66,5 +66,15 @@ export default class Loader extends Container
     {
         this.setText('')
         super.hide()
+    }
+
+    play(): void
+    {
+        this.template.classList.add('play')
+    }
+
+    pause(): void
+    {
+        this.template.classList.remove('play')
     }
 }

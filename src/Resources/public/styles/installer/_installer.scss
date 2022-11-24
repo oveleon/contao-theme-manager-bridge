@@ -1,8 +1,12 @@
-@import "loader";
-
 $text-color: #8f8f8f;
+$text-color-error: #b54c4c;
+$text-color-info: #a6a6a6;
 $primary-text-color: #566974;
 $primary-background-color: #688191;
+
+@import "loader";
+@import "product";
+@import "install";
 
 [hidden]{
   display: none !important;
@@ -58,30 +62,50 @@ $primary-background-color: #688191;
       padding: 25px;
       height: 100%;
     }
-  }
 
-  .widget{
-    display: flex;
-    flex-direction: column;
-    margin: 0 0 15px;
+    .widget{
+      display: flex;
+      flex-direction: column;
+      margin: 0 0 15px;
 
-    label{
-      display: inline-block;
-      color: #222;
-      font-size: .95rem;
-      font-weight: 500;
-      margin-bottom: 7px;
-    }
+      label{
+        display: inline-block;
+        color: #222;
+        font-size: .95rem;
+        font-weight: 500;
+        margin-bottom: 6px;
+      }
 
-    input{
-      font-size: .9rem;
-      line-height: 0;
-      border: 1px solid #688191;
-      border-radius: 3px;
-      outline-color: $primary-background-color;
+      input{
+        font-size: .9rem;
+        line-height: 0;
+        border: 1px solid #688191;
+        border-radius: 3px;
+        outline-color: $primary-background-color;
 
-      &[type="text"]{
-        padding: 6px 10px;
+        &::placeholder {
+          color: $text-color-info;
+        }
+
+        &[type="text"]{
+          padding: 6px 10px;
+        }
+      }
+
+      p{
+        font-size: .8rem;
+        margin: 5px 0 0;
+      }
+
+      &.error{
+
+        label, p{
+          color: $text-color-error;
+        }
+
+        input {
+          border-color: $text-color-error;
+        }
       }
     }
   }
@@ -115,6 +139,14 @@ $primary-background-color: #688191;
         color: #fff;
         border-color: $primary-background-color;
         background: $primary-background-color;
+      }
+
+      &[disabled]{
+        color: #fff;
+        border-color: #c3c4c5;
+        background: #d7d7d7;
+        pointer-events: none;
+        cursor: not-allowed;
       }
     }
   }

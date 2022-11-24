@@ -181,10 +181,10 @@
   height: 16px;
   transform-style: preserve-3d;
 }
-.loader .spinner:not(.disabled) {
+.loader.play .spinner {
   animation: spinner 2s infinite ease;
 }
-.loader .spinner:not(.disabled) > div {
+.loader.play .spinner > div {
   animation: spinner-color 3s infinite ease;
 }
 .loader .spinner > div {
@@ -266,6 +266,64 @@
     border-color: #e57c11;
   }
 }
+#installer .product {
+  display: flex;
+  align-items: center;
+  max-width: 470px;
+  margin: auto;
+}
+#installer .product .image {
+  position: relative;
+  width: 85px;
+  height: 85px;
+  border: 1px solid #ebebeb;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.15) 0 5px 15px 0;
+  margin-right: 20px;
+  overflow: hidden;
+}
+#installer .product .image img {
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 100%;
+}
+#installer .product .image:not(:has(img)):after {
+  display: block;
+  position: absolute;
+  inset: 14px;
+  content: "";
+  background: url("/bundles/contaothememanagerbridge/icons/assistant.svg") center center no-repeat;
+  background-size: contain;
+}
+#installer .product .content {
+  width: calc(100% - 90px);
+}
+#installer .product .content .title {
+  color: #222;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+#installer .product .content .description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.25em;
+  color: #8f8f8f;
+}
+#installer .product .content .version {
+  margin-top: 7px;
+  color: #a6a6a6;
+}
+
+#installer .process {
+  display: flex;
+  align-items: center;
+  max-width: 470px;
+  margin: auto;
+}
 [hidden] {
   display: none !important;
 }
@@ -312,27 +370,40 @@
   padding: 25px;
   height: 100%;
 }
-#installer .widget {
+#installer #steps .widget {
   display: flex;
   flex-direction: column;
   margin: 0 0 15px;
 }
-#installer .widget label {
+#installer #steps .widget label {
   display: inline-block;
   color: #222;
   font-size: 0.95rem;
   font-weight: 500;
-  margin-bottom: 7px;
+  margin-bottom: 6px;
 }
-#installer .widget input {
+#installer #steps .widget input {
   font-size: 0.9rem;
   line-height: 0;
   border: 1px solid #688191;
   border-radius: 3px;
   outline-color: #688191;
 }
-#installer .widget input[type=text] {
+#installer #steps .widget input::placeholder {
+  color: #a6a6a6;
+}
+#installer #steps .widget input[type=text] {
   padding: 6px 10px;
+}
+#installer #steps .widget p {
+  font-size: 0.8rem;
+  margin: 5px 0 0;
+}
+#installer #steps .widget.error label, #installer #steps .widget.error p {
+  color: #b54c4c;
+}
+#installer #steps .widget.error input {
+  border-color: #b54c4c;
 }
 #installer .actions {
   margin-top: auto;
@@ -358,6 +429,13 @@
   color: #fff;
   border-color: #688191;
   background: #688191;
+}
+#installer .actions button[disabled] {
+  color: #fff;
+  border-color: #c3c4c5;
+  background: #d7d7d7;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 
 @media (min-width: 600px) {
