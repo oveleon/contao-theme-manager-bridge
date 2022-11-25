@@ -2,6 +2,7 @@
 
   .product{
     display: flex;
+    flex-direction: column;
     align-items: center;
     max-width: 470px;
     margin: auto;
@@ -15,7 +16,7 @@
       border-radius: 50%;
       box-shadow: rgb(0 0 0 / 15%) 0 5px 15px 0;
 
-      margin-right: 20px;
+      margin: 0 auto 20px;
       overflow: hidden;
 
       img{
@@ -58,6 +59,19 @@
       .version{
         margin-top: 7px;
         color: $text-color-info;
+      }
+    }
+  }
+}
+
+@media (min-width: 600px) {
+  #installer {
+
+    .product {
+      flex-direction: row;
+
+      .image{
+        margin: 0 20px 0 0;
       }
     }
   }

@@ -1,7 +1,7 @@
 import Process, {IProcess} from "./Process";
 import {i18n} from "../../lang/"
 
-export default class InstallProcess extends Process implements IProcess
+export default class RegisterProcess extends Process implements IProcess
 {
     /**
      * @inheritDoc
@@ -10,8 +10,8 @@ export default class InstallProcess extends Process implements IProcess
         return `
             <div data-loader></div>
             <div class="content">
-                <div class="title">${i18n('install.install.title')}</div>
-                <p>${i18n('install.install.description')}</p>
+                <div class="title">${i18n('install.register.title')}</div>
+                <p>${i18n('install.register.description')}</p>
             </div>
         `;
     }
@@ -22,9 +22,9 @@ export default class InstallProcess extends Process implements IProcess
     process(): void
     {
         setTimeout(() => {
-            console.log('Install done')
+            console.log('Product registration done')
 
             this.resolve()
-        }, 5500)
+        }, 3000)
     }
 }

@@ -1,6 +1,7 @@
 import Step from "../components/Step"
 import {i18n} from "../lang/"
 import ProcessManager, {CheckSystemProcess, InstallProcess} from "./Process";
+import RegisterProcess from "./Process/RegisterProcess";
 
 export default class InstallStep extends Step
 {
@@ -46,6 +47,7 @@ export default class InstallStep extends Step
         // Add processes
         this.manager.addProcess(
             new CheckSystemProcess(container),
+            new RegisterProcess(container),
             new InstallProcess(container)
         )
 

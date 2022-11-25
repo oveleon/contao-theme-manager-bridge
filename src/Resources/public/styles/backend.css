@@ -284,6 +284,7 @@
 }
 #installer .product {
   display: flex;
+  flex-direction: column;
   align-items: center;
   max-width: 470px;
   margin: auto;
@@ -295,7 +296,7 @@
   border: 1px solid #ebebeb;
   border-radius: 50%;
   box-shadow: rgba(0, 0, 0, 0.15) 0 5px 15px 0;
-  margin-right: 20px;
+  margin: 0 auto 20px;
   overflow: hidden;
 }
 #installer .product .image img {
@@ -334,6 +335,14 @@
   color: #a6a6a6;
 }
 
+@media (min-width: 600px) {
+  #installer .product {
+    flex-direction: row;
+  }
+  #installer .product .image {
+    margin: 0 20px 0 0;
+  }
+}
 #installer .process {
   display: flex;
   flex-direction: column;
@@ -359,6 +368,7 @@
   margin-bottom: 6px;
 }
 #installer .process-step .content p {
+  font-size: 0.95rem;
   line-height: 1.25em;
   color: #8f8f8f;
   margin: 0;

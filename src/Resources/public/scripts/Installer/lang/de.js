@@ -21,6 +21,9 @@ module.exports = {
     'install.systemcheck.title':        "Systemüberprüfung",
     'install.systemcheck.description':  "Vor der Installation werden alle Anforderungen sowie Abhängigkeiten im System überprüft.",
 
+    'install.register.title':           "Produktregistrierung",
+    'install.register.description':     "Die Domain wird für das ausgewählte Produkt registriert.",
+
     'install.install.title':            "Produktinstallation",
-    'install.install.description':      "Das Produkt wird im System installiert und in Betrieb genommen.",
+    'install.install.description':      "Das Produkt wird im System installiert und in zur Verfügung gestellt.",
 }
