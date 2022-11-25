@@ -1,9 +1,7 @@
 import Container from "./Container"
-import Modal from "./Modal";
 
 export enum LoaderMode {
-    DISABLED = 'disabled',
-    INLINE= 'inline',
+    INLINE= 'inlined',
     COVER = 'cover'
 }
 
@@ -21,8 +19,8 @@ export default class Loader extends Container
         // Create container
         super('loader' + Loader.loaderId)
 
-        // Add template attributes
-        this.template.classList.add('loader')
+        // Add template class
+        this.addClass('loader')
 
         // Create content
         this.spinnerContainer = <HTMLDivElement> document.createElement('div')
@@ -49,12 +47,12 @@ export default class Loader extends Container
 
     setMode(type: LoaderMode)
     {
-        this.template.classList.remove(
+        this.removeClass(
             LoaderMode.INLINE,
             LoaderMode.COVER
         )
 
-        this.template.classList.add(type)
+        this.addClass(type)
     }
 
     setText(text: string): void
@@ -70,11 +68,11 @@ export default class Loader extends Container
 
     play(): void
     {
-        this.template.classList.add('play')
+        this.addClass('play')
     }
 
     pause(): void
     {
-        this.template.classList.remove('play')
+        this.removeClass('play')
     }
 }

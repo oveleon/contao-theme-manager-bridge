@@ -9,6 +9,6 @@ export async function call(url, parameter = {})
     }
 
     return fetch(url, props)
-        .then((response) => response.json())
-        .then((data) => data)
+            .then((response) => response.json())
+            .then((data) => data)
 }

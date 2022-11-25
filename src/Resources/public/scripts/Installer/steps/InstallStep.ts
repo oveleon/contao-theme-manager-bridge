@@ -4,6 +4,8 @@ import ProcessManager, {CheckSystemProcess, InstallProcess} from "./Process";
 
 export default class InstallStep extends Step
 {
+    private manager: ProcessManager
+
     /**
      * @inheritDoc
      */
@@ -13,7 +15,8 @@ export default class InstallStep extends Step
             <h2>${i18n('install.headline')}</h2>
             <div class="process"></div>
             <div class="actions">
-                <button class="close primary" disabled>${i18n('product.actions.install')}</button>
+                <button data-close disabled>${i18n('actions.close')}</button>
+                <button class="add primary" disabled>${i18n('install.actions.add')}</button>
             </div>
         `
     }
@@ -21,20 +24,57 @@ export default class InstallStep extends Step
     /**
      * @inheritDoc
      */
-    events()
+    mount()
     {
         // Get the container in which the processes should be appended
         const container = <HTMLDivElement> this.template.querySelector('.process')
 
-        // Create and start process manager
-        new ProcessManager()
-            .addProcess(
-                new CheckSystemProcess(container),
-                new InstallProcess(container)
-            )
-            .finish(() => {
-                console.log('all fin')
+        const addButton = <HTMLButtonElement> this.template.querySelector('button.add')
+        const closeButton = <HTMLButtonElement> this.template.querySelector('[data-close]')
+
+        // Method for reset the step
+        const resetProcess = () => {
+            addButton.disabled = true
+            closeButton.disabled = true
+
+            this.manager.reset()
+        }
+
+        // Create process manager
+        this.manager = new ProcessManager()
+
+        // Add processes
+        this.manager.addProcess(
+            new CheckSystemProcess(container),
+            new InstallProcess(container)
+        )
+
+        // Register on finish method
+        this.manager.finish(() => {
+            addButton.disabled = false
+            closeButton.disabled = false
+
+            closeButton.addEventListener('click', () => {
+                // Reset all
+                resetProcess()
+
+                this.modal.hide()
             })
-            .start()
+
+            addButton.addEventListener('click', () => {
+                // Reset all
+                resetProcess()
+
+                this.modal.open(0)
+            })
+        })
+    }
+
+    /**
+     * @inheritDoc
+     */
+    events() {
+        // Start process manager
+        this.manager.start()
     }
 }

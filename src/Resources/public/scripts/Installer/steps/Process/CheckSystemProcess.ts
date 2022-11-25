@@ -1,4 +1,5 @@
 import Process, {IProcess} from "./Process";
+import {i18n} from "../../lang/"
 
 export default class CheckSystemProcess extends Process implements IProcess
 {
@@ -9,7 +10,8 @@ export default class CheckSystemProcess extends Process implements IProcess
         return `
             <div data-loader></div>
             <div class="content">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.                
+                <div class="title">${i18n('install.systemcheck.title')}</div>
+                <p>${i18n('install.systemcheck.description')}</p>
             </div>
         `;
     }
@@ -19,8 +21,15 @@ export default class CheckSystemProcess extends Process implements IProcess
      */
     start(): void
     {
+        this.loader.play()
+        this.activate()
+
         setTimeout(() => {
-            console.log('Check system done')
+            console.log('System check done')
+
+            this.loader.pause()
+            this.loader.addClass('done')
+            //this.loader.addClass('fail')
             this.manager.next()
         }, 2000)
     }

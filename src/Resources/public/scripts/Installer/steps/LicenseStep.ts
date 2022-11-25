@@ -30,46 +30,45 @@ export default class LicenseStep extends Step
     /**
      * @inheritDoc
      */
-    events()
+    submit(form: HTMLFormElement, data: FormData)
     {
-        this.template.querySelector('form').addEventListener('submit', (e) => {
-            e.preventDefault()
+        // Save license form data
+        State.set('license', data.get('license'))
 
-            const form = <HTMLFormElement> e.target
-            const data = new FormData(form)
+        // Show loader
+        this.modal.loader(true, i18n('license.loading'))
 
-            if(!form.checkValidity())
+        // Check license
+        call(routes.license, {
+            license: data.get('license')
+        }).then((response) => {
+            // Hide loader
+            this.modal.loader(false)
+
+            // Check errors
+            if(response.error)
             {
-                form.reportValidity()
-                return;
+                super.error(response)
+                return
             }
 
-            // Save license form data
-            State.set('license', data.get('license'));
+            // Save product information
+            State.set('product', response)
 
-            // Show loader
-            this.modal.loader(true, i18n('license.loading'))
+            // Reset form
+            form.reset()
 
-            // Check license
-            call(routes.license, {
-                license: data.get('license')
-            }).then((response) => {
-                // Hide loader
-                this.modal.loader(false)
+            // Unlock form
+            this.lockedForm = false
 
-                // Check errors
-                if(response.error)
-                {
-                    super.error(response)
-                    return
-                }
+            // Show next step
+            this.modal.next()
+        }).catch(() => {
+            // ToDo: Error
+            console.log('error catch')
 
-                // Save product information
-                State.set('product', response);
-
-                // Show next step
-                this.modal.next()
-            })
+            // Unlock form
+            this.lockedForm = false
         })
     }
 }

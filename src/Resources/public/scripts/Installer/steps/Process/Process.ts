@@ -1,5 +1,6 @@
 import ProcessManager from "./ProcessManager"
-import Loader, {LoaderMode} from "../../components/Loader";
+import Loader from "../../components/Loader";
+import Container from "../../components/Container";
 
 export interface IProcess
 {
@@ -8,28 +9,31 @@ export interface IProcess
     getTemplate(): string
 }
 
-export default abstract class Process implements IProcess
+export default abstract class Process extends Container implements IProcess
 {
-    protected template: HTMLDivElement
+    static processId: number = 0
     protected loader: Loader
 
     constructor(
         protected container: HTMLElement
     ){
-        // Create process step template
-        this.template = document.createElement('div')
-        this.template.classList.add('process-step')
-        this.template.innerHTML = this.getTemplate()
+        // Create container
+        super('process' + Process.processId++)
 
-        this.container.append(this.template)
+        // Create process step template
+        this.addClass('process-step', 'not-active')
+        this.content(this.getTemplate())
+        this.appendTo(this.container)
 
         // Add loader
-        if(this.template.querySelector('[data-loader]'))
+        const loaderContainer = <HTMLDivElement> this.template.querySelector('[data-loader]')
+
+        if(loaderContainer)
         {
             this.loader = new Loader()
             this.loader.show()
             this.loader.pause()
-            this.loader.appendTo(<HTMLDivElement> this.template.querySelector('[data-loader]'))
+            this.loader.appendTo(loaderContainer)
         }
 
         this.mount()
@@ -50,6 +54,23 @@ export default abstract class Process implements IProcess
     addManager(manager: ProcessManager): void
     {
         this.manager = manager
+    }
+
+    /**
+     * Activate process
+     */
+    activate(): void
+    {
+        this.removeClass('not-active')
+    }
+
+    /**
+     * Reset process
+     */
+    reset(): void
+    {
+        this.loader?.pause()
+        this.loader?.removeClass('done', 'fail')
     }
 
     /**

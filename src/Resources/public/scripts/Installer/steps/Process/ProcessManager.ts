@@ -85,4 +85,17 @@ export default class ProcessManager {
 
         return this
     }
+
+    /**
+     * Reset manager and all processes
+     */
+    reset(): void
+    {
+        this.currentIndex = 0
+
+        for (const proc of this.processes)
+        {
+            proc.reset()
+        }
+    }
 }

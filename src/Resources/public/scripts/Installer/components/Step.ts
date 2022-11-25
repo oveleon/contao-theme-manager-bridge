@@ -9,25 +9,32 @@ interface StepErrorResponse {
 export default abstract class Step extends Container
 {
     static stepId: number = 0
+
     private init: boolean = false
+    protected lockedForm: boolean = false
     protected modal: Modal
 
     constructor() {
-        // Auto-increment id
-        Step.stepId++
-
         // Create container
-        super('step' + Step.stepId)
+        super('step' + Step.stepId++)
 
         // Steps are hidden by default
         this.hide()
     }
 
+    /**
+     * Add the modal instance
+     *
+     * @param modal
+     */
     addModal(modal: Modal): void
     {
         this.modal = modal
     }
 
+    /**
+     * Overwrites the Cotnainer::show Method
+     */
     show(): void
     {
         if(!this.init)
@@ -38,12 +45,15 @@ export default abstract class Step extends Container
             // Bind default events
             this.defaultEvents()
 
-            // Bind custom events
-            this.events()
+            // Mount step
+            this.mount()
 
             // Run only the first time
             this.init = true
         }
+
+        // Bind custom events
+        this.events()
 
         // Show step
         super.show()
@@ -54,9 +64,13 @@ export default abstract class Step extends Container
      */
     defaultEvents(): void
     {
+        // Default button events
         this.template.querySelector('[data-close]')?.addEventListener('click', () => this.modal.hide())
         this.template.querySelector('[data-prev]')?.addEventListener('click', () => this.modal.prev())
         this.template.querySelector('[data-next]')?.addEventListener('click', () => this.modal.next())
+
+        // Default form submit event
+        this.template.querySelector('form')?.addEventListener('submit', (e) => this.formSubmit(e))
     }
 
     /**
@@ -66,6 +80,10 @@ export default abstract class Step extends Container
      */
     error(response: StepErrorResponse): void
     {
+        // Unlock form
+        this.lockedForm = false
+
+        // Check if there are field errors
         if(response?.fields)
         {
             const form = <HTMLFormElement> this.template.querySelector('form')
@@ -97,11 +115,50 @@ export default abstract class Step extends Container
     }
 
     /**
-     * Set template events
+     * Default form submit event to validate and prevent double clicks
+     *
+     * @protected
+     */
+    protected formSubmit(event: SubmitEvent): void
+    {
+        event.preventDefault()
+
+        const form = <HTMLFormElement> event.target
+        const data = new FormData(form)
+
+        if(!form.checkValidity())
+        {
+            form.reportValidity()
+            return;
+        }
+
+        if(!this.lockedForm)
+        {
+            this.lockedForm = true;
+            this.submit(form, data, event)
+        }
+    }
+
+    /**
+     * Mount step (called once)
+     *
+     * @protected
+     */
+    protected mount(): void {}
+
+    /**
+     * Set events
      *
      * @protected
      */
     protected events(): void {}
+
+    /**
+     * Handle form submits
+     *
+     * @protected
+     */
+    protected submit(form: HTMLFormElement, data: FormData, event: SubmitEvent): void {}
 
     /**
      * Get template structure

@@ -39,4 +39,14 @@ export default class Container
     {
         this.template.hidden = false
     }
+
+    addClass(...className: string[]): void
+    {
+        this.template.classList.add(...className)
+    }
+
+    removeClass(...className: string[]): void
+    {
+        this.template.classList.remove(...className)
+    }
 }
