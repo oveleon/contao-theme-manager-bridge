@@ -19,18 +19,12 @@ export default class CheckSystemProcess extends Process implements IProcess
     /**
      * @inheritDoc
      */
-    start(): void
+    process(): void
     {
-        this.loader.play()
-        this.activate()
-
         setTimeout(() => {
             console.log('System check done')
 
-            this.loader.pause()
-            this.loader.addClass('done')
-            //this.loader.addClass('fail')
-            this.manager.next()
+            this.resolve()
         }, 2000)
     }
 }

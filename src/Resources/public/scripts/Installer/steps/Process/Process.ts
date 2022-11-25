@@ -4,7 +4,7 @@ import Container from "../../components/Container";
 
 export interface IProcess
 {
-    start(): void
+    process(): void
     mount(): void
     getTemplate(): string
 }
@@ -57,20 +57,41 @@ export default abstract class Process extends Container implements IProcess
     }
 
     /**
-     * Activate process
-     */
-    activate(): void
-    {
-        this.removeClass('not-active')
-    }
-
-    /**
      * Reset process
      */
     reset(): void
     {
+        this.addClass('not-active')
+
         this.loader?.pause()
         this.loader?.removeClass('done', 'fail')
+    }
+
+    /**
+     * Starts a single process
+     */
+    start(): void
+    {
+        this.loader?.play()
+        this.removeClass('not-active')
+
+        // Start process
+        this.process()
+    }
+
+    resolve(): void
+    {
+        this.loader?.pause()
+        this.loader?.addClass('done')
+
+        // Start next process
+        this.manager.next()
+    }
+
+    reject(): void
+    {
+        this.loader?.pause()
+        this.loader?.addClass('fail')
     }
 
     /**
@@ -79,9 +100,9 @@ export default abstract class Process extends Container implements IProcess
     mount(): void {}
 
     /**
-     * Starts a single process
+     * Start the process
      */
-    abstract start(): void
+    abstract process(): void
 
     /**
      * Template for process step
