@@ -46,6 +46,21 @@
         }
       }
 
+      .errors{
+        padding-left: 50px;
+        margin: 0;
+
+        > p{
+          margin: 2px 0 0;
+          font-size: .8rem !important;
+          color: #b72e2e !important;
+        }
+
+        &:not(:empty){
+          margin-top: 5px;
+        }
+      }
+
       &.not-active{
         opacity: .5;
       }
