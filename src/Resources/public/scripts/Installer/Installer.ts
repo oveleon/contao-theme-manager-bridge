@@ -37,5 +37,5 @@ export default class Installer
 
 export const routes = {
     license: "/contao/installer/check",
-    install: "/contao/installer/install"
+    systemcheck: "/contao/installer/install/systemcheck"
 }

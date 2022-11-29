@@ -1,4 +1,4 @@
-import Process, {IProcess} from "./Process";
+import Process, {IProcess} from "./Process"
 import {i18n} from "../../lang/"
 
 export default class InstallProcess extends Process implements IProcess

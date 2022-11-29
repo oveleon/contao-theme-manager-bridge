@@ -2,8 +2,10 @@
 
 namespace Oveleon\ContaoThemeManagerBridge\Controller;
 
+use Composer\InstalledVersions;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(
@@ -53,6 +55,24 @@ class ProductInstallController
                 'license' => 'Es konnte kein Produkt unter der angegebenen Lizenz gefunden werden. Bitte überprüfen Sie Ihre Eingabe und beachten Sie Groß- und Kleinschreibung.'
             ]
         ]);
+    }
+
+    #[Route('/install/systemcheck', name: 'installer_install_systemcheck', methods: ['POST'])]
+    public function installSystemCheck(): JsonResponse
+    {
+        if(InstalledVersions::isInstalled('contao-thememanager/core'))
+        {
+            return new JsonResponse([
+                'status' => 'OK'
+            ]);
+        }
+
+        return new JsonResponse([
+            'error' => true,
+            'messages' => [
+                'Contao ThemeManager Core muss installiert sein.'
+            ]
+        ], Response::HTTP_NOT_ACCEPTABLE);
     }
 
     #[Route('/install', name: 'installer_install', methods: ['POST'])]

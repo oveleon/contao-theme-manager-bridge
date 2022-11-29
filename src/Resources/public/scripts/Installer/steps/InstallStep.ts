@@ -1,7 +1,7 @@
 import Step from "../components/Step"
 import {i18n} from "../lang/"
-import ProcessManager, {CheckSystemProcess, InstallProcess} from "./Process";
-import RegisterProcess from "./Process/RegisterProcess";
+import ProcessManager, {CheckSystemProcess, InstallProcess} from "./Process"
+import RegisterProcess from "./Process/RegisterProcess"
 
 export default class InstallStep extends Step
 {

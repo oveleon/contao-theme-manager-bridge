@@ -56,7 +56,7 @@ export default class ProcessManager {
     {
         if(startIndex >= this.processes.length)
         {
-            this.onFinish.call(this)
+            this.exit()
             return
         }
 
@@ -64,6 +64,14 @@ export default class ProcessManager {
         this.currentProcess = this.processes[this.currentIndex]
 
         this.currentProcess.start()
+    }
+
+    /**
+     * Call the finish method
+     */
+    exit(): void
+    {
+        this.onFinish.call(this)
     }
 
     /**

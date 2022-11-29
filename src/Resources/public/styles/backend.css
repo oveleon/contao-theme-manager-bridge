@@ -375,7 +375,10 @@
 }
 #installer .process-step .actions {
   width: 100%;
+  margin: 0;
+  padding: 0;
   text-align: right;
+  align-self: center;
 }
 #installer .process-step .actions button {
   margin: 0;

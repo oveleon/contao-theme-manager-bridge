@@ -1,5 +1,7 @@
-import Process, {IProcess} from "./Process";
+import Process, {IProcess, ProcessErrorResponse} from "./Process"
 import {i18n} from "../../lang/"
+import {routes} from "../../Installer"
+import {call} from "../../../Utils/network"
 
 export default class CheckSystemProcess extends Process implements IProcess
 {
@@ -21,10 +23,30 @@ export default class CheckSystemProcess extends Process implements IProcess
      */
     process(): void
     {
-        setTimeout(() => {
-            console.log('System check done')
+        // Check license
+        call(routes.systemcheck).then((response) => {
+
+            console.log(response)
+
+            // Check errors
+            if(response.error)
+            {
+                this.reject(response)
+                return
+            }
 
             this.resolve()
-        }, 2000)
+        }).catch((e: Error) => this.reject(e))
+    }
+
+    /**
+     * @inheritDoc
+     */
+    reject(data: Error | ProcessErrorResponse): void
+    {
+        super.reject(data);
+
+        // Exit manager and following processes
+        this.manager.exit()
     }
 }

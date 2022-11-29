@@ -2,6 +2,11 @@ import ProcessManager from "./ProcessManager"
 import Loader from "../../components/Loader";
 import Container from "../../components/Container";
 
+export interface ProcessErrorResponse {
+    error: number | boolean,
+    messages?: string[]
+}
+
 export interface IProcess
 {
     process(): void
@@ -64,7 +69,7 @@ export default abstract class Process extends Container implements IProcess
         this.addClass('not-active')
 
         this.loader?.pause()
-        this.loader?.removeClass('done', 'fail')
+        this.loader?.removeClass('done', 'fail', 'pause')
     }
 
     /**
@@ -79,6 +84,9 @@ export default abstract class Process extends Container implements IProcess
         this.process()
     }
 
+    /**
+     * Resolve process
+     */
     resolve(): void
     {
         this.loader?.pause()
@@ -88,10 +96,60 @@ export default abstract class Process extends Container implements IProcess
         this.manager.next()
     }
 
-    reject(): void
+    /**
+     * Reject process
+     *
+     * @param data
+     */
+    reject(data: Error | ProcessErrorResponse): void
     {
         this.loader?.pause()
         this.loader?.addClass('fail')
+
+        this.error(data)
+    }
+
+    /**
+     * Shows occurred errors in the process
+     */
+    error(data: any): void
+    {
+        // ToDo: Show Error messages
+
+        // Create error container
+        const errors = <HTMLDivElement> document.createElement('div')
+
+        errors.classList.add('errors')
+        this.template.append(errors)
+
+        // Check for messages of intercepted errors
+        if(data?.messages)
+        {
+            for (const text of data.messages)
+            {
+                const msg = <HTMLParagraphElement> document.createElement('p')
+                msg.innerText = text
+                errors.append(msg)
+            }
+        }
+
+        // Check whether a fatal error has occurred.
+        // For example, no connection could be established to the server
+        if(data?.message)
+        {
+            const msg = <HTMLParagraphElement> document.createElement('p')
+            msg.innerText = data.message
+            errors.append(msg)
+        }
+    }
+
+    /**
+     * Pause process
+     */
+    pause(): void
+    {
+        this.loader?.pause()
+        this.loader?.addClass('pause')
     }
 
     /**
