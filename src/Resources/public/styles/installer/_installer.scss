@@ -41,6 +41,12 @@ $primary-background-color: #688191;
     overflow: hidden;
   }
 
+  p{
+    font-size: 1rem;
+    line-height: 1.25em;
+    color: $text-color;
+  }
+
   #steps{
     width: 100%;
 
@@ -48,12 +54,6 @@ $primary-background-color: #688191;
       font-size: 1.35em;
       color: #566974;
       margin-bottom: 15px;
-    }
-
-    p{
-      font-size: 1rem;
-      line-height: 1.25em;
-      color: $text-color;
     }
 
     > div{

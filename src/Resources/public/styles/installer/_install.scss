@@ -47,13 +47,14 @@
       }
 
       .errors{
+        width: 100%;
         padding-left: 50px;
         margin: 0;
 
         > p{
           margin: 2px 0 0;
-          font-size: .8rem !important;
-          color: #b72e2e !important;
+          font-size: .8rem;
+          color: $text-color-error;
         }
 
         &:not(:empty){

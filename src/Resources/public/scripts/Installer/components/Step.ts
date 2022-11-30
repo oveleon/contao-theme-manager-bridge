@@ -4,14 +4,12 @@ import Modal from "./Modal";
 export interface StepErrorResponse {
     error: number | boolean,
     fields?: []
-    notify?: string[]
 }
 
 export default abstract class Step extends Container
 {
     static stepId: number = 0
 
-    private init: boolean = false
     protected lockedForm: boolean = false
     protected modal: Modal
 
@@ -38,20 +36,11 @@ export default abstract class Step extends Container
      */
     show(): void
     {
-        if(!this.init)
-        {
-            // Update content before show
-            super.content(this.getTemplate())
+        // Update content before show
+        super.content(this.getTemplate())
 
-            // Bind default events
-            this.defaultEvents()
-
-            // Mount step
-            this.mount()
-
-            // Run only the first time
-            this.init = true
-        }
+        // Bind default events
+        this.defaultEvents()
 
         // Bind custom events
         this.events()
@@ -113,12 +102,6 @@ export default abstract class Step extends Container
                 }, {once: true})
             }
         }
-
-        // Check if there are notifications
-        if(response?.notify)
-        {
-
-        }
     }
 
     /**
@@ -145,13 +128,6 @@ export default abstract class Step extends Container
             this.submit(form, data, event)
         }
     }
-
-    /**
-     * Mount step (called once)
-     *
-     * @protected
-     */
-    protected mount(): void {}
 
     /**
      * Set events

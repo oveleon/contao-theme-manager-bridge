@@ -9,20 +9,31 @@ export default class ProductStep extends Step
      */
     getTemplate(): string
     {
-        const props = State.get('product');
-        const image = props.image ? `<img src="${props.image}" alt/>` : ''
+        const props = State.get('product')
+        let products = ''
+
+        for (const product of props.products)
+        {
+            const image = product.image ? `<img src="${product.image}" alt/>` : ''
+
+            products += `
+                 <div class="product">
+                    <div class="image">
+                        ${image}
+                    </div>
+                    <div class="content">
+                        <div class="title">${product.name}</div>
+                        <div class="description">${product.description}</div>
+                        <div class="version">${product.version}</div>
+                    </div>
+                </div>
+            `
+        }
 
         return `
             <h2>${i18n('product.headline')}</h2>
-            <div class="product">
-                <div class="image">
-                    ${image}
-                </div>
-                <div class="content">
-                    <div class="title">${props.name}</div>
-                    <div class="description">${props.description}</div>
-                    <div class="version">${props.version}</div>
-                </div>
+            <div class="products">
+                ${products}
             </div>
             <div class="actions">
                 <button data-prev>${i18n('actions.back')}</button>

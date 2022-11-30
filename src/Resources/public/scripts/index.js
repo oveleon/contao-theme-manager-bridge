@@ -7,5 +7,5 @@ const registerProductButton = document.getElementById('registerProduct')
 
 registerProductButton?.addEventListener('click', (e) => {
     e.preventDefault()
-    installer.startInstallProcess()
+    installer.open()
 })

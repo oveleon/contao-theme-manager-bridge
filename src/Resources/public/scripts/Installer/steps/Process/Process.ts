@@ -17,7 +17,9 @@ export interface IProcess
 export default abstract class Process extends Container implements IProcess
 {
     static processId: number = 0
+
     protected loader: Loader
+    protected errorContainer: HTMLDivElement
 
     constructor(
         protected container: HTMLElement
@@ -29,6 +31,11 @@ export default abstract class Process extends Container implements IProcess
         this.addClass('process-step', 'not-active')
         this.content(this.getTemplate())
         this.appendTo(this.container)
+
+        // Add error message container
+        this.errorContainer = <HTMLDivElement> document.createElement('div')
+        this.errorContainer.classList.add('errors')
+        this.template.append(this.errorContainer)
 
         // Add loader
         const loaderContainer = <HTMLDivElement> this.template.querySelector('[data-loader]')
@@ -70,6 +77,8 @@ export default abstract class Process extends Container implements IProcess
 
         this.loader?.pause()
         this.loader?.removeClass('done', 'fail', 'pause')
+
+        this.template.querySelector('div.errors')?.remove()
     }
 
     /**
@@ -114,22 +123,12 @@ export default abstract class Process extends Container implements IProcess
      */
     error(data: any): void
     {
-        // ToDo: Show Error messages
-
-        // Create error container
-        const errors = <HTMLDivElement> document.createElement('div')
-
-        errors.classList.add('errors')
-        this.template.append(errors)
-
         // Check for messages of intercepted errors
         if(data?.messages)
         {
             for (const text of data.messages)
             {
-                const msg = <HTMLParagraphElement> document.createElement('p')
-                msg.innerText = text
-                errors.append(msg)
+                this.addErrorParagraph(text)
             }
         }
 
@@ -137,10 +136,20 @@ export default abstract class Process extends Container implements IProcess
         // For example, no connection could be established to the server
         if(data?.message)
         {
-            const msg = <HTMLParagraphElement> document.createElement('p')
-            msg.innerText = data.message
-            errors.append(msg)
+            this.addErrorParagraph(data.message)
         }
+    }
+
+    /**
+     * Adds a paragraph to the error container
+     *
+     * @param content
+     */
+    addErrorParagraph(content: string): void
+    {
+        const msg = <HTMLParagraphElement> document.createElement('p')
+        msg.innerText = content
+        this.errorContainer.append(msg)
     }
 
     /**

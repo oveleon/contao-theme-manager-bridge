@@ -23,13 +23,21 @@ export default class Installer
         this.modal.appendTo('body')
     }
 
+    /**
+     * Set current language
+     *
+     * @param locale
+     */
     setLocale(locale: string): void
     {
         this.locale = locale
         setLanguage(locale)
     }
 
-    startInstallProcess(): void
+    /**
+     * Open Installer
+     */
+    open(): void
     {
         this.modal.open()
     }

@@ -39,12 +39,19 @@ class ProductInstallController
         if($license === 'ABC')
         {
             return new JsonResponse([
-                'name' => 'Vorlagen-Paket MEDIUM',
-                'version' => '1.0.0',
-                'image' => 'https://avatars.githubusercontent.com/u/44843847?s=200&v=4',
-                'description' => 'Um ein triviales Beispiel zu nehmen, wer von uns unterzieht sich je anstrengender körperlicher Betätigung, außer um Vorteile daraus zu ziehen?',
-                'company' => 'oveleon',
-                'repository' => 'content-package-1',
+                'products' => [
+                    [
+                        'name' => 'Vorlagen-Paket MEDIUM',
+                        'version' => '1.0.0',
+                        'image' => 'https://avatars.githubusercontent.com/u/44843847?s=200&v=4',
+                        'description' => 'Um ein triviales Beispiel zu nehmen, wer von uns unterzieht sich je anstrengender körperlicher Betätigung, außer um Vorteile daraus zu ziehen?',
+                        'registrable' => true,
+                        'repository' => [
+                            'company' => 'oveleon',
+                            'repository' => 'content-package-1'
+                        ]
+                    ]
+                ],
                 'key' => 'license-connector-key-to-get-github-auth-key'
             ]);
         }
@@ -60,6 +67,8 @@ class ProductInstallController
     #[Route('/install/systemcheck', name: 'installer_install_systemcheck', methods: ['POST'])]
     public function installSystemCheck(): JsonResponse
     {
+        // ToDo: Create Hook to create a check by other bundles
+
         if(InstalledVersions::isInstalled('contao-thememanager/core'))
         {
             return new JsonResponse([
@@ -80,5 +89,11 @@ class ProductInstallController
     {
         // ToDo: Install based on key to get the github auth
 
+        return new JsonResponse([
+            'error' => true,
+            'messages' => [
+                'Coming soon...'
+            ]
+        ], Response::HTTP_NOT_ACCEPTABLE);
     }
 }

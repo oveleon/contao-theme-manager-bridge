@@ -1,7 +1,8 @@
-export async function call(url, parameter = {})
+export async function call(url, parameter = {}, cache = false)
 {
     const props = {
         method: 'POST',
+        cache: cache ? "force-cache" : "no-cache",
         headers: {
             'Content-Type': 'application/json',
         },

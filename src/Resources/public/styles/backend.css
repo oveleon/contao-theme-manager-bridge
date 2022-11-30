@@ -282,12 +282,16 @@
     border-color: #e57c11;
   }
 }
-#installer .product {
+#installer .products {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 470px;
   margin: auto;
+}
+#installer .product {
+  display: flex;
+  flex-direction: column;
+  max-width: 470px;
 }
 #installer .product .image {
   position: relative;
@@ -314,7 +318,7 @@
   background-size: contain;
 }
 #installer .product .content {
-  width: calc(100% - 90px);
+  width: 100%;
 }
 #installer .product .content .title {
   color: #222;
@@ -334,6 +338,9 @@
   margin-top: 7px;
   color: #a6a6a6;
 }
+#installer .product + .product {
+  margin-top: 30px;
+}
 
 @media (min-width: 600px) {
   #installer .product {
@@ -341,6 +348,9 @@
   }
   #installer .product .image {
     margin: 0 20px 0 0;
+  }
+  #installer .product .content {
+    width: calc(100% - 90px);
   }
 }
 #installer .process {
@@ -384,13 +394,14 @@
   margin: 0;
 }
 #installer .process-step .errors {
+  width: 100%;
   padding-left: 50px;
   margin: 0;
 }
 #installer .process-step .errors > p {
   margin: 2px 0 0;
-  font-size: 0.8rem !important;
-  color: #b72e2e !important;
+  font-size: 0.8rem;
+  color: #b54c4c;
 }
 #installer .process-step .errors:not(:empty) {
   margin-top: 5px;
@@ -434,6 +445,11 @@
   border-radius: 4px;
   overflow: hidden;
 }
+#installer p {
+  font-size: 1rem;
+  line-height: 1.25em;
+  color: #8f8f8f;
+}
 #installer #steps {
   width: 100%;
 }
@@ -441,11 +457,6 @@
   font-size: 1.35em;
   color: #566974;
   margin-bottom: 15px;
-}
-#installer #steps p {
-  font-size: 1rem;
-  line-height: 1.25em;
-  color: #8f8f8f;
 }
 #installer #steps > div {
   display: flex;

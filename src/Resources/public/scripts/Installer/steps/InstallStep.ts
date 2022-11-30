@@ -25,7 +25,7 @@ export default class InstallStep extends Step
     /**
      * @inheritDoc
      */
-    mount()
+    events()
     {
         // Get the container in which the processes should be appended
         const container = <HTMLDivElement> this.template.querySelector('.process')
@@ -70,12 +70,7 @@ export default class InstallStep extends Step
                 this.modal.open(0)
             })
         })
-    }
 
-    /**
-     * @inheritDoc
-     */
-    events() {
         // Start process manager
         this.manager.start()
     }
