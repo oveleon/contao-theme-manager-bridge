@@ -17,33 +17,10 @@
         </div>
         <div class="footer">
             <div class="actions">
-                <a href="#" data-template="content-import-template-{{ contentPackage.name }}" target="_blank" class="tl_submit import">{{ label.import }}</a>
+                <a href="{{ action.docs }}" target="_blank" class="tl_submit">{{ label.docs }}</a>
+                <a href="{{ action.docs }}" target="_blank" class="tl_submit">{{ label.info }}</a>
             </div>
         </div>
-
-        <template id="content-import-template-{{ contentPackage.name }}">
-            <form action="{{ action.contentImport }}" method="post">
-                <h2>{{ contentPackage.manifest.name }}</h2>
-                <p>{{ label.importDesc }}</p>
-                <div class="widget-container">
-                    <div class="widget">
-                        <h3><label for="ctrl_page">{{ label.pageEntry }}</label></h3>
-                        <select name="page" id="ctrl_page" class="tl_select tl_chosen">
-                            <option value="">{{ label.createRoot }}</option>
-                            {% for id, name in pages %}
-                                <option value="{{ id }}">{{ name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {#<div class="widget">
-                        <h3><label for="ctrl_name">fefef<span class="mandatory">*</span></label></h3>
-                        <input name="name" id="ctrl_name" class="tl_text" required/>
-                    </div>#}
-                </div>
-                <input type="hidden" name="filepath" value="{{ contentPackage.realPath }}">
-                <input type="hidden" name="REQUEST_TOKEN" value="{{ rt }}">
-            </form>
-        </template>
     </div>
 {% endfor %}
 

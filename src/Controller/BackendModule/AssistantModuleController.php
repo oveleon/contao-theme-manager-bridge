@@ -7,17 +7,12 @@ use Contao\File;
 use Contao\FrontendTemplate;
 use Contao\Message;
 use Contao\CoreBundle\Image\Studio\Studio;
-use Contao\PageModel;
-use Contao\ThemeModel;
 use Contao\ZipReader;
 use Exception;
-use Oveleon\ContaoThemeManagerBridge\Controller\ContentPackageExportController;
-use Oveleon\ContaoThemeManagerBridge\Controller\ContentPackageImportController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
 use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment as TwigEnvironment;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,7 +31,6 @@ class AssistantModuleController extends AbstractController
         private readonly TwigEnvironment $twig,
         private readonly TranslatorInterface $translator,
         private readonly ContaoCsrfTokenManager $csrfTokenManager,
-        private readonly RouterInterface $router,
         private readonly Studio $studio
     ){}
 
@@ -51,31 +45,17 @@ class AssistantModuleController extends AbstractController
             '@ContaoThemeManagerBridge/assistant.html.twig',
             [
                 'label' => [
-                    'headline'          => $this->translator->trans('theme_assistant.headline', [], 'contao_default'),
-                    'backLabel'         => $this->translator->trans('MSC.backBT', [], 'contao_default'),
-                    'backTitle'         => $this->translator->trans('MSC.backBTTitle', [], 'contao_default'),
-                    'contentExport'     => $this->translator->trans('theme_assistant.content-package.label.export', [], 'contao_default'),
-                    'contentExportDesc' => $this->translator->trans('theme_assistant.content-package.label.exportDescription', [], 'contao_default'),
-                    'registerProduct'   => $this->translator->trans('theme_assistant.label.registerProduct', [], 'contao_default'),
-                    'contentStore'      => $this->translator->trans('theme_assistant.label.contentStore', [], 'contao_default'),
-                    'theme'             => $this->translator->trans('theme_assistant.label.theme', [], 'contao_default'),
-                    'pageEntry'         => $this->translator->trans('theme_assistant.label.pageEntry', [], 'contao_default'),
-                    'name'              => $this->translator->trans('theme_assistant.label.name', [], 'contao_default'),
-                    'version'           => $this->translator->trans('theme_assistant.label.version', [], 'contao_default'),
-                    'directory'         => $this->translator->trans('theme_assistant.label.directory', [], 'contao_default'),
-                    'exportHl'          => $this->translator->trans('theme_assistant.content-package.label.export', [], 'contao_default')
+                    'headline'     => $this->translator->trans('theme_assistant.headline', [], 'contao_default'),
+                    'backLabel'    => $this->translator->trans('MSC.backBT', [], 'contao_default'),
+                    'backTitle'    => $this->translator->trans('MSC.backBTTitle', [], 'contao_default'),
+                    'contentStore' => $this->translator->trans('theme_assistant.label.contentStore', [], 'contao_default')
                 ],
                 'action' => [
-                    'back'          => 'contao?do=themes',
-                    'store'         => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
-                    'contentExport' => $this->router->generate(ContentPackageExportController::class)
+                    'back'         => 'contao?do=themes',
+                    'store'        => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
                 ],
-                'rt'          => $this->csrfTokenManager->getDefaultTokenValue(),
-                'themes'      => $this->getThemes(),
-                'pages'       => $this->getRootPages(),
-                'directories' => $this->getFileDirectories(),
-                'messages'    => Message::generate(),
-                'sections'    => $this->sections
+                'messages'         => Message::generate(),
+                'sections'         => $this->sections
             ]
         ));
     }
@@ -115,8 +95,7 @@ class AssistantModuleController extends AbstractController
                         'docs'    => $this->translator->trans('theme_assistant.label.docs', [], 'contao_default'),
                         'info'    => $this->translator->trans('theme_assistant.label.info', [], 'contao_default'),
                         'store'   => $this->translator->trans('theme_assistant.label.store', [], 'contao_default'),
-                        'empty'   => $this->translator->trans('theme_assistant.theme.label.empty', [], 'contao_default'),
-                        'export'  => $this->translator->trans('theme_assistant.label.export', [], 'contao_default')
+                        'empty'   => $this->translator->trans('theme_assistant.theme.label.empty', [], 'contao_default')
                     ],
                     'link'     => [
                         'store'   => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
@@ -141,7 +120,8 @@ class AssistantModuleController extends AbstractController
                     'files'  => $this->getContentPackages(),
                     'label'  => [
                         'version'    => $this->translator->trans('theme_assistant.theme.label.version', [], 'contao_default'),
-                        'import'     => $this->translator->trans('theme_assistant.label.import', [], 'contao_default'),
+                        'docs'       => $this->translator->trans('theme_assistant.label.docs', [], 'contao_default'),
+                        'info'       => $this->translator->trans('theme_assistant.label.info', [], 'contao_default'),
                         'store'      => $this->translator->trans('theme_assistant.label.content-store', [], 'contao_default'),
                         'empty'      => $this->translator->trans('theme_assistant.content-package.label.empty', [], 'contao_default'),
                         'importDesc' => $this->translator->trans('theme_assistant.content-package.label.importDescription', [], 'contao_default'),
@@ -149,10 +129,10 @@ class AssistantModuleController extends AbstractController
                         'createRoot' => $this->translator->trans('theme_assistant.label.createRoot', [], 'contao_default'),
                     ],
                     'action' => [
-                        'store'         => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
-                        'contentImport' => $this->router->generate(ContentPackageImportController::class)
+                        'store'      => $this->translator->trans('theme_assistant.link.store', [], 'contao_default'),
+                        'docs'       => $this->translator->trans('theme_assistant.link.docs', [], 'contao_default'),
+                        'info'       => $this->translator->trans('theme_assistant.link.info', [], 'contao_default')
                     ],
-                    'pages'  => $this->getRootPages(),
                     'rt'     => $this->csrfTokenManager->getDefaultTokenValue(),
                 ]
             )
@@ -185,56 +165,6 @@ class AssistantModuleController extends AbstractController
         }
 
         return null;
-    }
-
-    private function getThemes(): array
-    {
-        if(!$themes = ThemeModel::findAll())
-        {
-            return [];
-        }
-
-        return array_combine(
-            $themes->fetchEach('id') ?? [],
-            $themes->fetchEach('name') ?? []
-        );
-    }
-
-    private function getFileDirectories(): array
-    {
-        $root = Controller::getContainer()->getParameter('kernel.project_dir');
-        $path  = 'files';
-
-        $finder = new Finder();
-        $finder
-            ->directories()
-            ->in($root . DIRECTORY_SEPARATOR . $path)
-            ->depth('== 0');
-
-        $dirs = [];
-
-        if ($finder->hasResults())
-        {
-            foreach ($finder as $dir)
-            {
-                $dirs[$dir->getRealPath()] = $dir->getBasename();
-            }
-        }
-
-        return $dirs;
-    }
-
-    private function getRootPages(): array
-    {
-        if(!$pages = PageModel::findByType('root'))
-        {
-            return [];
-        }
-
-        return array_combine(
-            $pages->fetchEach('id') ?? [],
-            $pages->fetchEach('title') ?? []
-        );
     }
 
     /**

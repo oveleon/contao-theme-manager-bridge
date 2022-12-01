@@ -3,8 +3,6 @@
 {% block headline %}
     <div id="theme-assistant-headline">{{ label.headline }}</div>
     <div id="theme-assistant-buttons">
-        <a href="#" class="header_theme_import content-export" title="{{ label.contentExport }}" accesskey="e">{{ label.contentExport }}</a>
-        <a href="#" id="registerProduct" class="theme_export" title="{{ label.registerProduct }}" accesskey="p">{{ label.registerProduct }}</a>
         <a href="{{ action.store }}" class="header_store content-store" target="_blank" title="{{ label.contentStore }}">{{ label.contentStore }}</a>
         <a href="{{ action.back }}" class="header_back" title="{{ label.backTitle }}" accesskey="b">{{ label.backLabel }}</a>
     </div>
@@ -25,48 +23,4 @@
             </div>
         {% endfor %}
     </div>
-
-    <template id="content-export-template">
-        <form action="{{ action.contentExport }}" id="tl_export" method="post">
-            <h2>{{ label.exportHl }}</h2>
-            <p>{{ label.contentExportDesc }}</p>
-            <div class="widget-container">
-                <div class="widget">
-                    <h3><label for="ctrl_theme">{{ label.theme }}</label></h3>
-                    <select name="theme" id="ctrl_theme" class="tl_select tl_chosen">
-                        {% for id, name in themes %}
-                            <option value="{{ id }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="widget">
-                    <h3><label for="ctrl_page">{{ label.pageEntry }}</label></h3>
-                    <select name="page" id="ctrl_page" class="tl_select tl_chosen">
-                        {% for id, name in pages %}
-                            <option value="{{ id }}">{{ name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="widget">
-                    <h3><label for="ctrl_directory">{{ label.directory }}</label></h3>
-                    <select name="directory" id="ctrl_directory" class="tl_select tl_chosen">
-                        {% for path, dirName in directories %}
-                            <option value="{{ path }}">{{ dirName }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="widget">
-                    <h3><label for="ctrl_name">{{ label.name }}<span class="mandatory">*</span></label></h3>
-                    <input name="name" id="ctrl_name" class="tl_text" required/>
-                </div>
-                <div class="widget">
-                    <h3><label for="ctrl_version">{{ label.version }}<span class="mandatory">*</span></label></h3>
-                    <input name="version" id="ctrl_version" class="tl_text" placeholder="1.0.0" required/>
-                </div>
-            </div>
-            <input type="hidden" name="REQUEST_TOKEN" value="{{ rt }}">
-        </form>
-    </template>
-
-    <script src="{{ asset('bundles/contaothememanagerbridge/build/main.js') }}"></script>
 {% endblock %}

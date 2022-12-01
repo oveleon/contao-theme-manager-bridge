@@ -21,6 +21,7 @@
         "symfony/config": "^5.4 || ^6.0",
         "symfony/dependency-injection": "^5.4 || ^6.0",
         "symfony/http-kernel": "^5.4 || ^6.0",
+        "oveleon/product-installer": "^0.1",
         "knplabs/github-api": "^3.9"
     },
     "require-dev": {
