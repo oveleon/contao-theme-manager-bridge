@@ -10,6 +10,7 @@ use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Routing\RoutingPluginInterface;
 use Oveleon\ContaoThemeManagerBridge\ContaoThemeManagerBridge;
+use Oveleon\ProductInstaller\ProductInstaller;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -19,7 +20,10 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
     {
         return [
             BundleConfig::create(ContaoThemeManagerBridge::class)
-                ->setLoadAfter([ContaoCoreBundle::class]),
+                        ->setLoadAfter([
+                            ContaoCoreBundle::class,
+                            ProductInstaller::class
+                        ])
         ];
     }
 

@@ -1,0 +1,13 @@
+theme_manager_installer:
+    product:
+        icon:                   %contao.backend.route_prefix%/bundles/contaothememanagerbridge/icons/assistant.svg
+        title:                  Contao ThemeManager
+        description:            Register a license that you have purchased through the Contao ThemeManager.
+    license:
+        errors:
+            license_not_found:  The specified license could not be found, please check your input and pay attention to upper and lower case.
+            license_empty:      Please enter a valid license.
+    processes:
+        system_check:
+            title:              System check
+            description:        Before installation, all requirements as well as dependencies in the system are checked.
