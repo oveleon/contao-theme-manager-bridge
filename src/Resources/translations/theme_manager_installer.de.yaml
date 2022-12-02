@@ -1,6 +1,6 @@
 theme_manager_installer:
     product:
-        icon:                   %contao.backend.route_prefix%/bundles/contaothememanagerbridge/icons/assistant.svg
+        image:                  /bundles/contaothememanagerbridge/icons/assistant.svg
         title:                  Contao ThemeManager
         description:            Registrieren Sie eine Lizenz, welche Sie über den Contao ThemeManager erworben haben.
     license:

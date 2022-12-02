@@ -14,7 +14,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
     defaults: ['_scope' => 'backend', '_token_check' => false],
     methods: ['POST']
 )]
-class SystemCheckProcess
+class SystemCheckProcessController
 {
     public function __construct(
         private readonly RequestStack $requestStack,
