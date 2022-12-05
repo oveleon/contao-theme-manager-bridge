@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Oveleon\ContaoThemeManagerBridge\DependencyInjection;
 
-use Oveleon\ContaoThemeManagerBridge\Licenser\ThemeManagerLicenser;
+use Oveleon\ContaoThemeManagerBridge\LicenseConnector\ThemeManagerLicenseConnector;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -22,7 +22,7 @@ class ContaoThemeManagerBridgeExtension extends Extension implements PrependExte
     public function prepend(ContainerBuilder $container)
     {
         $container->prependExtensionConfig('product_installer', [
-            'licenser' => [ThemeManagerLicenser::class],
+            'license_connectors' => [ThemeManagerLicenseConnector::class],
         ]);
     }
 }

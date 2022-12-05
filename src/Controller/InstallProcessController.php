@@ -8,10 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(
-    '%contao.backend.route_prefix%/product/theme-manager/systemcheck',
-    defaults: ['_scope' => 'backend', '_token_check' => false],
-    methods: ['POST']
+#[Route('%contao.backend.route_prefix%/product/theme-manager/install',
+    name:       InstallProcessController::class,
+    defaults:   ['_scope' => 'backend', '_token_check' => false],
+    methods:    ['POST']
 )]
 class InstallProcessController
 {

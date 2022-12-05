@@ -11,3 +11,8 @@ theme_manager_installer:
         system_check:
             title:              Systemüberprüfung
             description:        Vor der Installation werden alle Anforderungen sowie Abhängigkeiten im System überprüft.
+            error:
+                core_not_found: Contao ThemeManager Core muss installiert sein.
+        install:
+            title:              Produktinstallation
+            description:        Das Produkt wird im System installiert und für die Verwendung vorbereitet.

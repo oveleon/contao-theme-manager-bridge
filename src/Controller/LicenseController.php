@@ -7,10 +7,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route(
-    '%contao.backend.route_prefix%/product/theme-manager/license',
-    defaults: ['_scope' => 'backend', '_token_check' => false],
-    methods: ['POST']
+#[Route('%contao.backend.route_prefix%/product/theme-manager/license',
+    name:       LicenseController::class,
+    defaults:   ['_scope' => 'backend', '_token_check' => false],
+    methods:    ['POST']
 )]
 class LicenseController
 {
