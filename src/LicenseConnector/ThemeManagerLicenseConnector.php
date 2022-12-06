@@ -8,6 +8,7 @@ use Oveleon\ContaoThemeManagerBridge\Controller\LicenseController;
 use Oveleon\ContaoThemeManagerBridge\Controller\SystemCheckProcessController;
 use Oveleon\ProductInstaller\LicenseConnector\AbstractLicenseConnector;
 use Oveleon\ProductInstaller\LicenseConnector\Process\DefaultProcess;
+use Oveleon\ProductInstaller\LicenseConnector\Step\ContaoManagerStep;
 use Oveleon\ProductInstaller\LicenseConnector\Step\LicenseStep;
 use Oveleon\ProductInstaller\LicenseConnector\Step\ProductStep;
 use Oveleon\ProductInstaller\LicenseConnector\Step\ProcessStep;
@@ -37,9 +38,17 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
 
         // Create steps
         $this->addSteps(
+            // Add license step
             (new LicenseStep())
                 ->addRoute(LicenseStep::ROUTE_CHECK_LICENSE, $router->generate(LicenseController::class)),
+
+            // Add product preview step
             new ProductStep(),
+
+            // Add contao manager authentication step
+            new ContaoManagerStep(),
+
+            // Add install process step
             (new ProcessStep())
                 ->addProcesses(
                     $systemCheckProcess,
