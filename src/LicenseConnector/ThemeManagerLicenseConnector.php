@@ -65,9 +65,10 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
         $translator = Controller::getContainer()->get('translator');
 
         return [
-            'image'         => $translator->trans('theme_manager_installer.product.image', [], 'theme_manager_installer'),
+            'name'          => 'ThemeManager',
             'title'         => $translator->trans('theme_manager_installer.product.title', [], 'theme_manager_installer'),
-            'description'   => $translator->trans('theme_manager_installer.product.description', [], 'theme_manager_installer')
+            'description'   => $translator->trans('theme_manager_installer.product.description', [], 'theme_manager_installer'),
+            'image'         => $translator->trans('theme_manager_installer.product.image', [], 'theme_manager_installer'),
         ];
     }
 }
