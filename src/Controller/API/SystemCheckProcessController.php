@@ -1,6 +1,6 @@
 <?php
 
-namespace Oveleon\ContaoThemeManagerBridge\Controller;
+namespace Oveleon\ContaoThemeManagerBridge\Controller\API;
 
 use Composer\InstalledVersions;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('%contao.backend.route_prefix%/product/theme-manager/systemcheck',
+#[Route('%contao.backend.route_prefix%/api/theme-manager/systemcheck',
     name:       SystemCheckProcessController::class,
     defaults:   ['_scope' => 'backend', '_token_check' => false],
     methods:    ['POST']

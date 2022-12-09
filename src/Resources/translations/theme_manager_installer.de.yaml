@@ -3,10 +3,6 @@ theme_manager_installer:
         image:                  /bundles/contaothememanagerbridge/icons/assistant.svg
         title:                  Contao ThemeManager
         description:            Registrieren Sie eine Lizenz, welche Sie über den Contao ThemeManager erworben haben.
-    license:
-        errors:
-            license_not_found:  Die Angegebene Lizenz konnte nicht gefunden werden, bitte überprüfen Sie Ihre Eingabe und achten Sie auf Groß- und Kleinschreibung.
-            license_empty:      Bitte geben Sie eine gültige Lizenz an.
     processes:
         system_check:
             title:              Systemüberprüfung

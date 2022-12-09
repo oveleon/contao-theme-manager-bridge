@@ -3,11 +3,10 @@
 namespace Oveleon\ContaoThemeManagerBridge\LicenseConnector;
 
 use Contao\Controller;
-use Oveleon\ContaoThemeManagerBridge\Controller\InstallProcessController;
-use Oveleon\ContaoThemeManagerBridge\Controller\LicenseController;
-use Oveleon\ContaoThemeManagerBridge\Controller\SystemCheckProcessController;
+use Oveleon\ContaoThemeManagerBridge\Controller\API\InstallProcessController;
+use Oveleon\ContaoThemeManagerBridge\Controller\API\SystemCheckProcessController;
 use Oveleon\ProductInstaller\LicenseConnector\AbstractLicenseConnector;
-use Oveleon\ProductInstaller\LicenseConnector\Process\DefaultProcess;
+use Oveleon\ProductInstaller\LicenseConnector\Process\ApiProcess;
 use Oveleon\ProductInstaller\LicenseConnector\Step\ContaoManagerStep;
 use Oveleon\ProductInstaller\LicenseConnector\Step\LicenseStep;
 use Oveleon\ProductInstaller\LicenseConnector\Step\ProductStep;
@@ -26,26 +25,25 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
         $translator = Controller::getContainer()->get('translator');
 
         // Create processes
-        $systemCheckProcess = (new DefaultProcess(
+        $systemCheckProcess = (new ApiProcess(
             $translator->trans('theme_manager_installer.processes.system_check.title', [], 'theme_manager_installer'),
             $translator->trans('theme_manager_installer.processes.system_check.description', [], 'theme_manager_installer')
-        ))->addRoute(DefaultProcess::ROUTE_PROCESS, $router->generate(SystemCheckProcessController::class));
+        ))->addRoute(ApiProcess::ROUTE, $router->generate(SystemCheckProcessController::class));
 
-        $installProcess = (new DefaultProcess(
+        $installProcess = (new ApiProcess(
             $translator->trans('theme_manager_installer.processes.install.title', [], 'theme_manager_installer'),
             $translator->trans('theme_manager_installer.processes.install.description', [], 'theme_manager_installer')
-        ))->addRoute(DefaultProcess::ROUTE_PROCESS, $router->generate(InstallProcessController::class));
+        ))->addRoute(ApiProcess::ROUTE, $router->generate(InstallProcessController::class));
 
         // Create steps
         $this->addSteps(
             // Add license step
-            (new LicenseStep())
-                ->addRoute(LicenseStep::ROUTE_CHECK_LICENSE, $router->generate(LicenseController::class)),
+            new LicenseStep(),
 
             // Add product preview step
             new ProductStep(),
 
-            // Add contao manager authentication step
+            // Add contao manager step
             new ContaoManagerStep(),
 
             // Add install process step
@@ -69,6 +67,7 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
             'title'         => $translator->trans('theme_manager_installer.product.title', [], 'theme_manager_installer'),
             'description'   => $translator->trans('theme_manager_installer.product.description', [], 'theme_manager_installer'),
             'image'         => $translator->trans('theme_manager_installer.product.image', [], 'theme_manager_installer'),
+            'entry'         => ''
         ];
     }
 }

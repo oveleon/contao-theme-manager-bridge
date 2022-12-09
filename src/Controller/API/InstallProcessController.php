@@ -1,6 +1,6 @@
 <?php
 
-namespace Oveleon\ContaoThemeManagerBridge\Controller;
+namespace Oveleon\ContaoThemeManagerBridge\Controller\API;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('%contao.backend.route_prefix%/product/theme-manager/install',
+#[Route('%contao.backend.route_prefix%/api/theme-manager/install',
     name:       InstallProcessController::class,
     defaults:   ['_scope' => 'backend', '_token_check' => false],
     methods:    ['POST']
