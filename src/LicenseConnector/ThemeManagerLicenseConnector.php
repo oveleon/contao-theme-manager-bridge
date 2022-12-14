@@ -7,6 +7,7 @@ use Oveleon\ContaoThemeManagerBridge\Controller\API\InstallProcessController;
 use Oveleon\ContaoThemeManagerBridge\Controller\API\SystemCheckProcessController;
 use Oveleon\ProductInstaller\LicenseConnector\AbstractLicenseConnector;
 use Oveleon\ProductInstaller\LicenseConnector\Process\ApiProcess;
+use Oveleon\ProductInstaller\LicenseConnector\Process\ContaoManagerProcess;
 use Oveleon\ProductInstaller\LicenseConnector\Step\ContaoManagerStep;
 use Oveleon\ProductInstaller\LicenseConnector\Step\LicenseStep;
 use Oveleon\ProductInstaller\LicenseConnector\Step\ProductStep;
@@ -49,6 +50,7 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
             // Add install process step
             (new ProcessStep())
                 ->addProcesses(
+                    new ContaoManagerProcess(),
                     $systemCheckProcess,
                     $installProcess
                 )
