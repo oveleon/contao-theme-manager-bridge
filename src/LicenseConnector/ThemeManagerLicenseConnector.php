@@ -69,7 +69,7 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
             'title'         => $translator->trans('theme_manager_installer.product.title', [], 'theme_manager_installer'),
             'description'   => $translator->trans('theme_manager_installer.product.description', [], 'theme_manager_installer'),
             'image'         => $translator->trans('theme_manager_installer.product.image', [], 'theme_manager_installer'),
-            'entry'         => ''
+            'entry'         => 'http://contao-shop.local/api'
         ];
     }
 }
