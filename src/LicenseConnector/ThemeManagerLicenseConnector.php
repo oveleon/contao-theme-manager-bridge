@@ -33,11 +33,6 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
             $translator->trans('theme_manager_installer.processes.system_check.description', [], 'theme_manager_installer')
         ))->addRoute(ApiProcess::ROUTE, $router->generate(SystemCheckProcessController::class));
 
-        $installProcess = (new ApiProcess(
-            $translator->trans('theme_manager_installer.processes.install.title', [], 'theme_manager_installer'),
-            $translator->trans('theme_manager_installer.processes.install.description', [], 'theme_manager_installer')
-        ))->addRoute(ApiProcess::ROUTE, $router->generate(InstallProcessController::class));
-
         // Create steps
         $this->addSteps(
             // Add license step
@@ -57,7 +52,6 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
                 ->addProcesses(
                     new ContaoManagerProcess(),
                     $systemCheckProcess,
-                    $installProcess,
                     new RegisterProductProcess()
                 )
         );
