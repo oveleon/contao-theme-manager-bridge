@@ -1,14 +1,5 @@
 theme_manager_installer:
     product:
-        image:                  /bundles/contaothememanagerbridge/icons/assistant.svg
+        image:                  /bundles/contaothememanagerbridge/logo.svg
         title:                  Contao ThemeManager
         description:            Register a license that you have purchased through the Contao ThemeManager.
-    processes:
-        system_check:
-            title:              System check
-            description:        Before installation, all requirements as well as dependencies in the system are checked.
-            error:
-                core_not_found: Contao ThemeManager Core must be installed.
-        install:
-            title:              Product installation
-            description:        The product is installed in the system and prepared for use.

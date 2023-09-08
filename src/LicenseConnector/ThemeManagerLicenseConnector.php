@@ -3,11 +3,9 @@
 namespace Oveleon\ContaoThemeManagerBridge\LicenseConnector;
 
 use Contao\Controller;
-use Oveleon\ContaoThemeManagerBridge\Controller\API\InstallProcessController;
-use Oveleon\ContaoThemeManagerBridge\Controller\API\SystemCheckProcessController;
 use Oveleon\ProductInstaller\LicenseConnector\AbstractLicenseConnector;
-use Oveleon\ProductInstaller\LicenseConnector\Process\ApiProcess;
 use Oveleon\ProductInstaller\LicenseConnector\Process\ContaoManagerProcess;
+use Oveleon\ProductInstaller\LicenseConnector\Process\DownloadProcess;
 use Oveleon\ProductInstaller\LicenseConnector\Process\RegisterProductProcess;
 use Oveleon\ProductInstaller\LicenseConnector\Step\AdvertisingStep;
 use Oveleon\ProductInstaller\LicenseConnector\Step\ContaoManagerStep;
@@ -24,15 +22,6 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
 {
     function setSteps(): void
     {
-        $router = Controller::getContainer()->get('router');
-        $translator = Controller::getContainer()->get('translator');
-
-        // Create processes
-        $systemCheckProcess = (new ApiProcess(
-            $translator->trans('theme_manager_installer.processes.system_check.title', [], 'theme_manager_installer'),
-            $translator->trans('theme_manager_installer.processes.system_check.description', [], 'theme_manager_installer')
-        ))->addRoute(ApiProcess::ROUTE, $router->generate(SystemCheckProcessController::class));
-
         // Create steps
         $this->addSteps(
             // Add license step
@@ -50,8 +39,8 @@ class ThemeManagerLicenseConnector extends AbstractLicenseConnector
             // Add install process step
             (new ProcessStep())
                 ->addProcesses(
+                    new DownloadProcess(),
                     new ContaoManagerProcess(),
-                    $systemCheckProcess,
                     new RegisterProductProcess()
                 )
         );
