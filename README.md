@@ -1,7 +1,3 @@
 # Contao ThemeManager Bridge
-This extension allows you to register, manage and install products from the ThemeManager Store. It also provides an overview of the installed products.
 
-#### ToDo
-- Finish bundle
-- Check license
-- Set bundle to public
+The _Contao ThemeManager Bridge_ is an extension for the [Product Installer](https://github.com/oveleon/product-installer) and connects it to the [Contao ThemeManager Shop](https://contao-thememanager.com) to install and set up products from there.
