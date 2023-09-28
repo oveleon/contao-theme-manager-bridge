@@ -1,6 +1,6 @@
 {
     "name": "oveleon/contao-theme-manager-bridge",
-    "description": "Bridge between Contao ThemeManager and Oveleon Themes.",
+    "description": "The Contao ThemeManager Bridge is an extension for the Product Installer and connects it to the Contao ThemeManager Shop to install and set up products from there.",
     "license": "AGPL-3.0-or-later",
     "type": "library",
     "authors": [
