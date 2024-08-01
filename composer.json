@@ -18,7 +18,7 @@
         "ext-dom": "*",
         "php": "^8.1",
         "oveleon/product-installer": "*",
-        "contao/core-bundle": "^4.13 || ^5.2",
+        "contao/core-bundle": "^4.13 || ^5.3",
         "symfony/dependency-injection": "^5.4 || ^6.4 || ^7.0"
     },
     "require-dev": {
